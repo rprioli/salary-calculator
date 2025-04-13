@@ -1,0 +1,149 @@
+/* Additional custom styles beyond Tailwind CSS */
+
+/* Custom animation for the loading spinner */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Custom styles for the file upload area when dragging over */
+.drag-over {
+    background-color: #e0e7ff !important;
+    border-color: #818cf8 !important;
+    transform: scale(1.02);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Custom styles for highlighted layover flights */
+.layover-row {
+    background-color: #eef2ff;
+    border-left: 3px solid #818cf8;
+}
+
+/* Custom styles for highlighted turnaround flights */
+.turnaround-row {
+    background-color: #e6fffa;
+    border-left: 3px solid #0d9488;
+}
+
+/* Custom transitions */
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Button hover effects */
+.btn-hover-effect {
+    transition: all 0.3s ease;
+}
+
+.btn-hover-effect:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Custom button focus styles */
+button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.5);
+}
+
+/* Card hover effects */
+.card-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Custom scrollbar for the flight details table */
+.table-container::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: #c7d2fe;
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: #a5b4fc;
+}
+
+/* Table row hover effect */
+.table-row-hover {
+    transition: background-color 0.2s ease;
+}
+
+.table-row-hover:hover {
+    background-color: #f3f4f6;
+}
+
+/* Success and error message animations */
+.message-animation {
+    animation: slideDown 0.4s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .role-buttons {
+        flex-direction: column;
+    }
+
+    .summary-card {
+        grid-column: span 3;
+    }
+
+    /* Improve mobile spacing */
+    .mobile-spacing {
+        margin-bottom: 1.5rem;
+    }
+
+    /* Adjust table for mobile */
+    .mobile-table-view {
+        font-size: 0.875rem;
+    }
+
+    .mobile-table-view th,
+    .mobile-table-view td {
+        padding: 0.5rem;
+    }
+}
