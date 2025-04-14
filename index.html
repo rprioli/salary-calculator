@@ -22,11 +22,8 @@
             // In production, you would verify a JWT token or session cookie
             const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
 
-            // If not authenticated and not in guest mode, redirect to sign-in
-            const urlParams = new URLSearchParams(window.location.search);
-            const isGuest = urlParams.get('guest') === 'true';
-
-            if (!isAuthenticated && !isGuest) {
+            // If not authenticated, redirect to sign-in
+            if (!isAuthenticated) {
                 window.location.href = 'sign-in.html';
             }
         }
