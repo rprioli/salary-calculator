@@ -49,6 +49,17 @@ function sortFlights() {
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
+    // Check if user has a position stored in their profile
+    const userPosition = sessionStorage.getItem('userPosition');
+    if (userPosition) {
+        // Map the position value to the role
+        if (userPosition === 'ccm') {
+            handleRoleSelect('CCM');
+        } else if (userPosition === 'sccm') {
+            handleRoleSelect('SCCM');
+        }
+    }
+
     // Add event listeners to role selection buttons
     document.getElementById('ccm-button').addEventListener('click', () => handleRoleSelect('CCM'));
     document.getElementById('sccm-button').addEventListener('click', () => handleRoleSelect('SCCM'));
