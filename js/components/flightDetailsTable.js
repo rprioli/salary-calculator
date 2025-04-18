@@ -33,18 +33,16 @@ function renderFlightDetailsTable(parsedFlights, editingFlightIndex, editedDebri
     // Add flight rows
     parsedFlights.forEach((flight, index) => {
         const tr = document.createElement('tr');
-        // Apply different styling based on flight type
+        // Apply consistent styling for all flight types with hover effect
+        tr.className = 'border-t border-gray-200 table-row-hover';
+
+        // Set appropriate aria labels for accessibility
         if (flight.isLayover) {
-            tr.className = 'border-t border-gray-200 layover-row';
             tr.setAttribute('aria-label', 'Layover flight');
         } else if (flight.isTurnaround) {
-            tr.className = 'border-t border-gray-200 turnaround-row';
             tr.setAttribute('aria-label', 'Turnaround flight');
         } else if (flight.isAsby) {
-            tr.className = 'border-t border-gray-200 table-row-hover';
             tr.setAttribute('aria-label', 'Airport standby duty');
-        } else {
-            tr.className = 'border-t border-gray-200 table-row-hover';
         }
 
         // Date column
@@ -74,17 +72,10 @@ function renderFlightDetailsTable(parsedFlights, editingFlightIndex, editedDebri
 
         // Add special styling for ASBY
         if (flight.isAsby) {
-            tdFlight.innerHTML = `<span class="bg-yellow-100 text-yellow-800 py-1 px-2 rounded-full text-xs font-medium">${flight.flight}</span>`;
+            tdFlight.innerHTML = `<span class="text-yellow-800 font-medium">${flight.flight}</span>`;
         }
-        // Add special styling for turnaround flights
-        else if (flight.isTurnaround) {
-            tdFlight.innerHTML = `
-                <div class="flex items-center">
-                    <span>${flight.flight}</span>
-                    <span class="ml-2 bg-teal-100 text-teal-800 py-0.5 px-1.5 rounded-full text-xs font-medium">TR</span>
-                </div>
-            `;
-        } else {
+        // Simple text for all flight types
+        else {
             tdFlight.textContent = flight.flight;
         }
         tr.appendChild(tdFlight);
@@ -93,6 +84,13 @@ function renderFlightDetailsTable(parsedFlights, editingFlightIndex, editedDebri
         const tdSector = document.createElement('td');
         tdSector.className = 'p-4 text-gray-700';
 
+        // Define standard arrow SVG for all flight types - smaller size
+        const standardArrowSvg = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+            </svg>
+        `;
+
         // Add special styling for layover flights
         if (flight.isLayover) {
             const sectorParts = flight.sector.split(' - ');
@@ -100,9 +98,7 @@ function renderFlightDetailsTable(parsedFlights, editingFlightIndex, editedDebri
                 tdSector.innerHTML = `
                     <div class="flex items-center">
                         <span>${sectorParts[0]}</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-1 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
-                        </svg>
+                        <span class="text-indigo-500">${standardArrowSvg}</span>
                         <span>${sectorParts[1]}</span>
                     </div>
                 `;
@@ -139,13 +135,9 @@ function renderFlightDetailsTable(parsedFlights, editingFlightIndex, editedDebri
                 tdSector.innerHTML = `
                     <div class="flex items-center">
                         <span>${origin}</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-1 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                        </svg>
+                        <span class="text-teal-500">${standardArrowSvg}</span>
                         <span>${destination}</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-1 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                        </svg>
+                        <span class="text-teal-500">${standardArrowSvg}</span>
                         <span>${origin}</span>
                     </div>
                 `;
@@ -153,7 +145,23 @@ function renderFlightDetailsTable(parsedFlights, editingFlightIndex, editedDebri
                 tdSector.textContent = flight.sector;
             }
         } else {
-            tdSector.textContent = flight.sector;
+            // For regular flights, check if there's a sector with a dash
+            if (flight.sector && flight.sector.includes(' - ')) {
+                const sectorParts = flight.sector.split(' - ');
+                if (sectorParts.length === 2) {
+                    tdSector.innerHTML = `
+                        <div class="flex items-center">
+                            <span>${sectorParts[0]}</span>
+                            <span class="text-gray-500">${standardArrowSvg}</span>
+                            <span>${sectorParts[1]}</span>
+                        </div>
+                    `;
+                } else {
+                    tdSector.textContent = flight.sector;
+                }
+            } else {
+                tdSector.textContent = flight.sector;
+            }
         }
         tr.appendChild(tdSector);
 

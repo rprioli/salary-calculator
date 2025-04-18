@@ -378,7 +378,7 @@ function handleFileUpload(event) {
 function handleEditDebriefTime(index) {
     editingFlightIndex = index;
     editedDebriefTime = parsedFlights[index].debriefing;
-    renderFlightDetailsTable(parsedFlights, editingFlightIndex, editedDebriefTime);
+    renderFlightDetailsCards(parsedFlights, editingFlightIndex, editedDebriefTime);
 }
 
 // Save edited debriefing time
@@ -446,7 +446,7 @@ function handleSaveDebriefTime() {
 function handleCancelEdit() {
     editingFlightIndex = null;
     editedDebriefTime = '';
-    renderFlightDetailsTable(parsedFlights, editingFlightIndex, editedDebriefTime);
+    renderFlightDetailsCards(parsedFlights, editingFlightIndex, editedDebriefTime);
 }
 
 // Show delete confirmation dialog
@@ -657,8 +657,8 @@ function renderResults() {
     // Render salary breakdown
     renderSalaryBreakdown(selectedRole, calculationResults, salaryBreakdownExpanded);
 
-    // Render flight details table
-    renderFlightDetailsTable(parsedFlights, editingFlightIndex, editedDebriefTime);
+    // Render flight details as cards
+    renderFlightDetailsCards(parsedFlights, editingFlightIndex, editedDebriefTime);
 
     // Update flight count
     document.getElementById('flight-count').textContent = `${parsedFlights.length} flights`;

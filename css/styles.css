@@ -34,16 +34,9 @@
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
-/* Custom styles for highlighted layover flights */
-.layover-row {
-    background-color: #eef2ff;
-    border-left: 3px solid #818cf8;
-}
-
-/* Custom styles for highlighted turnaround flights */
-.turnaround-row {
-    background-color: #e6fffa;
-    border-left: 3px solid #0d9488;
+/* Custom styles for layover and turnaround flights - removed background colors */
+.layover-row, .turnaround-row {
+    /* Styles removed to maintain consistent appearance */
 }
 
 /* Custom transitions */
@@ -120,6 +113,16 @@ button:focus {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Card styles for flight details */
+.flight-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.flight-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 /* Responsive adjustments */
