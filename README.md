@@ -44,11 +44,12 @@ Skywage/
 
 ## How to Use
 
-1. Open `index.html` in a web browser
-2. Select your cabin crew role (CCM or SCCM)
-3. Upload your roster CSV file
-4. View your calculated salary breakdown and flight details
-5. Optionally edit debriefing times or delete flights
+1. Open `sign-in.html` in a web browser
+2. Sign in with your account or register a new account
+3. Your role (CCM or SCCM) is set during registration and can be changed in your profile
+4. Upload your roster CSV file or add flights manually
+5. View your calculated salary breakdown and flight details
+6. Optionally edit debriefing times or delete flights
 
 ## CSV Format
 

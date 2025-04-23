@@ -125,6 +125,35 @@ button:focus {
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
+/* Chart styles */
+.h-64 {
+    min-height: 256px;
+}
+
+/* Chart bar animations */
+@keyframes growUp {
+    from { height: 0; }
+    to { height: 100%; }
+}
+
+/* Direct style for chart bars */
+[style*="height:"][style*="px"][style*="background-color:"] {
+    animation: growUp 1s ease-out;
+    transform-origin: bottom;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    display: block;
+}
+
+/* Table-based chart styles */
+table.w-full.border-collapse {
+    height: 256px;
+}
+
+table.w-full.border-collapse td {
+    vertical-align: bottom;
+    padding-bottom: 8px;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .role-buttons {

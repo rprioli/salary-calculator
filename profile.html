@@ -5,145 +5,361 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="User Profile - Skywage Cabin Crew Salary Calculator">
     <title>Skywage - User Profile</title>
+    <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
     <!-- Include Tailwind CSS from CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Include Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Authentication check script -->
+    <script>
+        // Check if user is authenticated (for demo purposes)
+        // In a real app, this would validate a token with the backend
+        function checkAuthentication() {
+            // For demo purposes, we'll use sessionStorage
+            // In production, you would verify a JWT token or session cookie
+            const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
+
+            // If not authenticated, redirect to sign-in
+            if (!isAuthenticated) {
+                window.location.href = 'sign-in.html';
+            }
+        }
+
+        // Run the check when the page loads
+        checkAuthentication();
+    </script>
 </head>
-<body class="bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen">
-    <div class="py-10 px-4">
-        <div class="w-full bg-white rounded-lg shadow-lg p-6 max-w-4xl mx-auto border-t-4 border-indigo-500">
-            <!-- Header with Back Button -->
-            <div class="flex justify-between items-center pb-6 mb-6 border-b border-gray-200">
-                <div class="flex items-center">
-                    <a href="index.html" class="text-indigo-600 hover:text-indigo-800 mr-4">
-                        <i class="fas fa-arrow-left"></i>
-                    </a>
-                    <h1 class="text-2xl font-semibold text-gray-800">User Profile</h1>
-                </div>
-                <div class="flex items-center">
-                    <i class="fas fa-plane text-indigo-500 text-2xl mr-2"></i>
-                    <span class="text-xl font-medium text-gray-700">Skywage</span>
-                </div>
+<body style="margin: 0; padding: 0; overflow-x: hidden;">
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-logo">
+                <i class="fas fa-plane"></i>
             </div>
+            <nav class="sidebar-menu">
+                <a href="index.html" class="sidebar-menu-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="statistics.html" class="sidebar-menu-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Statistics</span>
+                </a>
+                <a href="profile.html" class="sidebar-menu-item active">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="#" class="sidebar-menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="#" class="sidebar-menu-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Help</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="sign-out-button">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sign Out</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-content">
+            <header class="dashboard-header">
+                <h1 class="dashboard-title">Profile Settings</h1>
+                <div class="dashboard-user">
+                    <div class="dashboard-user-info">
+                        <div class="dashboard-user-name" id="user-name">Welcome back!</div>
+                        <div class="dashboard-user-role" id="user-email">user@example.com</div>
+                    </div>
+                    <div class="dashboard-user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </header>
 
             <!-- Profile Content -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Sidebar -->
-                <div class="md:col-span-1">
-                    <div class="bg-indigo-50 rounded-lg p-6">
-                        <div class="flex flex-col items-center mb-6">
-                            <div class="bg-indigo-100 rounded-full p-4 mb-4">
-                                <i class="fas fa-user text-indigo-600 text-3xl"></i>
-                            </div>
-                            <h2 id="profile-email" class="text-lg font-medium text-gray-800 text-center">user@example.com</h2>
-                        </div>
-                        
-                        <nav class="space-y-2">
-                            <a href="#" class="flex items-center p-3 rounded-md bg-indigo-100 text-indigo-700">
-                                <i class="fas fa-user-cog w-5 mr-3"></i>
-                                <span>Profile Settings</span>
-                            </a>
-                            <a href="#" class="flex items-center p-3 rounded-md hover:bg-indigo-50 text-gray-700 hover:text-indigo-700">
-                                <i class="fas fa-shield-alt w-5 mr-3"></i>
-                                <span>Security</span>
-                            </a>
-                            <a href="#" class="flex items-center p-3 rounded-md hover:bg-indigo-50 text-gray-700 hover:text-indigo-700">
-                                <i class="fas fa-history w-5 mr-3"></i>
-                                <span>Activity Log</span>
-                            </a>
-                            <a href="#" id="sign-out-link" class="flex items-center p-3 rounded-md hover:bg-red-50 text-gray-700 hover:text-red-700">
-                                <i class="fas fa-sign-out-alt w-5 mr-3"></i>
-                                <span>Sign Out</span>
-                            </a>
-                        </nav>
-                    </div>
+            <div class="chart-card mb-6">
+                <div class="chart-card-header">
+                    <div class="chart-card-title">Personal Information</div>
                 </div>
-                
-                <!-- Main Content -->
-                <div class="md:col-span-2">
-                    <div class="bg-white rounded-lg p-6">
-                        <h3 class="text-xl font-medium text-gray-800 mb-6">Profile Settings</h3>
-                        
-                        <form id="profile-form">
-                            <!-- Email Field (Read-only) -->
-                            <div class="mb-5">
-                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <i class="fas fa-envelope text-gray-400"></i>
-                                    </div>
-                                    <input type="email" id="email" name="email" 
-                                        class="pl-10 w-full p-3 border border-gray-300 rounded-md bg-gray-50 text-gray-500"
-                                        readonly>
+                <div class="p-4">
+                    <form id="profile-form">
+                        <!-- Email Field (Read-only) -->
+                        <div class="mb-5">
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-envelope text-gray-400"></i>
                                 </div>
-                                <p class="mt-1 text-xs text-gray-500">Email cannot be changed.</p>
+                                <input type="email" id="email" name="email"
+                                    class="pl-10 w-full p-3 border border-gray-300 rounded-md bg-gray-50 text-gray-500"
+                                    readonly>
                             </div>
-                            
-                            <!-- Airline Selection -->
-                            <div class="mb-5">
-                                <label for="airline" class="block text-sm font-medium text-gray-700 mb-1">Airline</label>
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <i class="fas fa-plane-departure text-gray-400"></i>
-                                    </div>
-                                    <select id="airline" name="airline" 
-                                        class="pl-10 w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white"
-                                        required>
-                                        <option value="" disabled>Select your airline</option>
-                                        <option value="flydubai">FlyDubai</option>
-                                        <option value="emirates" disabled class="text-gray-400">Emirates (Coming Soon)</option>
-                                    </select>
-                                    <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                        <i class="fas fa-chevron-down text-gray-400"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Position Selection -->
-                            <div class="mb-6">
-                                <label for="position" class="block text-sm font-medium text-gray-700 mb-1">Position</label>
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <i class="fas fa-user-tie text-gray-400"></i>
-                                    </div>
-                                    <select id="position" name="position" 
-                                        class="pl-10 w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white"
-                                        required>
-                                        <option value="" disabled>Select your position</option>
-                                        <option value="captain" disabled class="text-gray-400">Captain (Coming Soon)</option>
-                                        <option value="first-officer" disabled class="text-gray-400">First Officer (Coming Soon)</option>
-                                        <option value="sccm">Senior Cabin Crew Member (SCCM)</option>
-                                        <option value="ccm">Cabin Crew Member (CCM)</option>
-                                    </select>
-                                    <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                                        <i class="fas fa-chevron-down text-gray-400"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Save Button -->
-                            <div class="flex justify-end">
-                                <button type="submit" id="save-profile-button" 
-                                    class="bg-indigo-600 text-white py-2 px-6 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-colors">
-                                    <i class="fas fa-save mr-2"></i>Save Changes
-                                </button>
-                            </div>
-                        </form>
-                        
-                        <!-- Success Message -->
-                        <div id="success-message" class="mt-4 p-3 bg-green-50 text-green-700 rounded-md hidden">
-                            <i class="fas fa-check-circle mr-2"></i>
-                            <span>Your profile has been updated successfully.</span>
+                            <p class="mt-1 text-xs text-gray-500">Email cannot be changed.</p>
                         </div>
+
+                        <!-- Airline Selection -->
+                        <div class="mb-5">
+                            <label for="airline" class="block text-sm font-medium text-gray-700 mb-1">Airline</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-plane-departure text-gray-400"></i>
+                                </div>
+                                <select id="airline" name="airline"
+                                    class="pl-10 w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-600 focus:border-blue-600 appearance-none bg-white"
+                                    required>
+                                    <option value="" disabled>Select your airline</option>
+                                    <option value="flydubai">FlyDubai</option>
+                                    <option value="emirates" disabled class="text-gray-400">Emirates (Coming Soon)</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                    <i class="fas fa-chevron-down text-gray-400"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Position Selection -->
+                        <div class="mb-6">
+                            <label for="position" class="block text-sm font-medium text-gray-700 mb-1">Position</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-user-tie text-gray-400"></i>
+                                </div>
+                                <select id="position" name="position"
+                                    class="pl-10 w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-600 focus:border-blue-600 appearance-none bg-white"
+                                    required>
+                                    <option value="" disabled>Select your position</option>
+                                    <option value="captain" disabled class="text-gray-400">Captain (Coming Soon)</option>
+                                    <option value="first-officer" disabled class="text-gray-400">First Officer (Coming Soon)</option>
+                                    <option value="sccm">Senior Cabin Crew Member (SCCM)</option>
+                                    <option value="ccm">Cabin Crew Member (CCM)</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                    <i class="fas fa-chevron-down text-gray-400"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Save Button -->
+                        <div class="flex justify-end">
+                            <button type="submit" id="save-profile-button"
+                                class="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors">
+                                <i class="fas fa-save mr-2"></i>Save Changes
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Success Message -->
+                    <div id="success-message" class="mt-4 p-3 bg-green-50 text-green-700 rounded-md hidden">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        <span>Your profile has been updated successfully.</span>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <!-- Footer -->
+            <div class="text-center text-gray-500 text-sm mt-10 pt-6 border-t border-gray-200">
+                <div class="flex justify-center items-center">
+                    <i class="fas fa-plane text-blue-400 mr-2"></i>
+                    <span>© 2025 Skywage - Cabin Crew Salary Calculator</span>
+                </div>
+                <div class="mt-2 text-xs text-gray-400">
+                    <a href="#" class="text-blue-500 hover:text-blue-700 transition-colors">Privacy Policy</a> |
+                    <a href="#" class="text-blue-500 hover:text-blue-700 transition-colors">Terms of Service</a>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <!-- JavaScript for Profile Functionality -->
-    <script src="js/profile.js"></script>
+    <!-- JavaScript Dependencies -->
+    <script src="js/constants.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/ui-utils.js"></script>
+    <script src="js/data-manager.js"></script>
+    <script src="js/calculations.js"></script>
+    <script src="js/components.js"></script>
+
+    <!-- Profile Page JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            if (!window.auth || !window.auth.checkAuthentication()) {
+                return; // Stop execution if auth module not loaded or not authenticated
+            }
+
+            // Load user data
+            loadUserData();
+
+            // Add event listener for profile form submission
+            const profileForm = document.getElementById('profile-form');
+            if (profileForm) {
+                profileForm.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    saveUserProfile();
+                });
+            }
+
+            // Add event listener for sign out button
+            const signOutButton = document.getElementById('sign-out-button');
+            if (signOutButton) {
+                signOutButton.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    if (window.auth) {
+                        window.auth.signOut();
+                    } else {
+                        // Fallback to local function if auth module not loaded
+                        signOut();
+                    }
+                });
+            }
+        });
+
+        // Load user data from session storage
+        function loadUserData() {
+            // Get user data
+            let userData;
+
+            if (window.auth) {
+                userData = window.auth.getCurrentUser();
+            } else {
+                // Fallback if auth module not loaded
+                userData = {
+                    email: sessionStorage.getItem('userEmail'),
+                    position: sessionStorage.getItem('userPosition'),
+                    airline: sessionStorage.getItem('userAirline') || 'flydubai'
+                };
+            }
+
+            // Update email display
+            const userEmailElement = document.getElementById('user-email');
+            const emailInput = document.getElementById('email');
+
+            if (userEmailElement && userData.email) {
+                userEmailElement.textContent = userData.email;
+            }
+
+            if (emailInput && userData.email) {
+                emailInput.value = userData.email;
+            }
+
+            // Update position selection
+            const positionSelect = document.getElementById('position');
+            if (positionSelect && userData.position) {
+                positionSelect.value = userData.position;
+            }
+
+            // Update airline selection
+            const airlineSelect = document.getElementById('airline');
+            if (airlineSelect && userData.airline) {
+                airlineSelect.value = userData.airline;
+            } else if (airlineSelect) {
+                airlineSelect.value = 'flydubai';
+            }
+        }
+
+        // Save user profile data
+        function saveUserProfile() {
+            // Get form values
+            const email = document.getElementById('email').value;
+            const airline = document.getElementById('airline').value;
+            const position = document.getElementById('position').value;
+
+            // Show loading state
+            const saveButton = document.getElementById('save-profile-button');
+            const originalButtonText = saveButton.innerHTML;
+            saveButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
+            saveButton.disabled = true;
+
+            // Simulate API call delay
+            setTimeout(function() {
+                let positionChanged = false;
+
+                // Update user position using auth module if available
+                if (window.auth) {
+                    const result = window.auth.updateUserPosition(position);
+                    positionChanged = result.changed;
+                } else {
+                    // Fallback if auth module not loaded
+                    const previousPosition = sessionStorage.getItem('userPosition');
+                    positionChanged = previousPosition !== position;
+
+                    // Update session storage
+                    sessionStorage.setItem('userAirline', airline);
+                    sessionStorage.setItem('userPosition', position);
+
+                    // Update user data in local storage
+                    const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+                    const userIndex = registeredUsers.findIndex(user => user.email === email);
+
+                    if (userIndex !== -1) {
+                        registeredUsers[userIndex].airline = airline;
+                        registeredUsers[userIndex].position = position;
+                        localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+                    }
+                }
+
+                // Show success message
+                if (window.ui) {
+                    window.ui.showNotification('success', 'Profile updated successfully!');
+                } else {
+                    // Fallback if UI module not loaded
+                    const successMessage = document.getElementById('success-message');
+                    if (successMessage) {
+                        successMessage.classList.remove('hidden');
+
+                        // Hide success message after 3 seconds
+                        setTimeout(function() {
+                            successMessage.classList.add('hidden');
+                        }, 3000);
+                    }
+                }
+
+                // Reset button
+                saveButton.innerHTML = originalButtonText;
+                saveButton.disabled = false;
+
+                // If position changed, recalculate data and redirect
+                if (positionChanged) {
+                    if (window.calculations) {
+                        // Show recalculation notification
+                        if (window.ui) {
+                            window.ui.showNotification('info', 'Recalculating salary data...', 2000);
+                        }
+
+                        // Recalculate all data with new position
+                        window.calculations.recalculateAllData(position);
+
+                        // Redirect to dashboard after a delay
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 2000);
+                    } else {
+                        // Fallback if calculations module not loaded
+                        // Just redirect to dashboard
+                        window.location.href = 'index.html';
+                    }
+                }
+            }, 1000); // 1 second delay to simulate network request
+        }
+
+        // Sign out function (fallback if auth module not loaded)
+        function signOut() {
+            // Clear authentication data
+            sessionStorage.removeItem('isAuthenticated');
+            sessionStorage.removeItem('userEmail');
+            sessionStorage.removeItem('userAirline');
+            sessionStorage.removeItem('userPosition');
+
+            // Redirect to sign-in page
+            window.location.href = 'sign-in.html';
+        }
+    </script>
 </body>
 </html>

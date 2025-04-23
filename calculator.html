@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Calculate cabin crew salary based on roster data">
+    <title>Skywage Calculator</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <!-- Include Tailwind CSS from CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Include Papa Parse for CSV parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <!-- Include Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Authentication check script -->
+    <script>
+        // Check if user is authenticated (for demo purposes)
+        // In a real app, this would validate a token with the backend
+        function checkAuthentication() {
+            // For demo purposes, we'll use sessionStorage
+            // In production, you would verify a JWT token or session cookie
+            const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
+
+            // If not authenticated, redirect to sign-in
+            if (!isAuthenticated) {
+                window.location.href = 'sign-in.html';
+            }
+        }
+
+        // Run the check when the page loads
+        checkAuthentication();
+
+        // For testing purposes, set authentication to true
+        sessionStorage.setItem('isAuthenticated', 'true');
+        sessionStorage.setItem('userPosition', 'sccm');
+        sessionStorage.setItem('userEmail', 'test@example.com');
+    </script>
+</head>
+<body style="margin: 0; padding: 0; overflow-x: hidden;">
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-logo">
+                <i class="fas fa-plane"></i>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="index.html" class="sidebar-menu-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="calculator.html" class="sidebar-menu-item active">
+                    <i class="fas fa-calculator"></i>
+                    <span>Calculator</span>
+                </a>
+                <a href="#" class="sidebar-menu-item">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="#" class="sidebar-menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="#" class="sidebar-menu-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Help</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="sign-out-button">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sign Out</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-content">
+            <header class="dashboard-header">
+                <h1 class="dashboard-title">Salary Calculator</h1>
+                <div class="dashboard-user">
+                    <div class="dashboard-user-info">
+                        <div class="dashboard-user-name" id="user-name">Welcome back!</div>
+                        <div class="dashboard-user-role" id="user-email">user@example.com</div>
+                    </div>
+                    <div class="dashboard-user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Calculator Content -->
+            <div class="chart-card mb-6">
+                <div class="chart-card-header">
+                    <div class="chart-card-title">Calculate Your Salary</div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                    <!-- Upload Roster Button -->
+                    <label for="csv-upload" class="flex flex-col items-center p-6 bg-gray-50 border border-gray-200 rounded-lg hover:shadow-md transition-all cursor-pointer">
+                        <div class="bg-indigo-100 p-4 rounded-full mb-4">
+                            <i class="fas fa-file-upload text-indigo-500 text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-700 mb-1">Upload Roster</h3>
+                        <p class="text-sm text-gray-500 text-center">Import your CSV file</p>
+                        <input id="csv-upload" type="file" accept=".csv" class="hidden">
+                    </label>
+
+                    <!-- Add Manually Button -->
+                    <button id="add-flight-btn" class="flex flex-col items-center p-6 bg-gray-50 border border-gray-200 rounded-lg hover:shadow-md transition-all">
+                        <div class="bg-green-100 p-4 rounded-full mb-4">
+                            <i class="fas fa-plus text-green-500 text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-700 mb-1">Add Manually</h3>
+                        <p class="text-sm text-gray-500 text-center">Enter duty details</p>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Manual Flight Form Container -->
+            <div id="manual-flight-form-container" class="chart-card mb-6 hidden">
+                <!-- Manual flight entry form will be injected here by JavaScript -->
+            </div>
+
+            <!-- Sample Results -->
+            <div class="chart-card mb-6">
+                <div class="chart-card-header">
+                    <div class="chart-card-title">Salary Calculation Results</div>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 mt-4">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="text-xs text-gray-500 uppercase mb-1">Basic Salary</h3>
+                        <div class="text-lg font-bold text-gray-800">8,500 AED</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="text-xs text-gray-500 uppercase mb-1">Flight Pay</h3>
+                        <div class="text-lg font-bold text-gray-800">2,845 AED</div>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h3 class="text-xs text-gray-500 uppercase mb-1">Total Salary</h3>
+                        <div class="text-lg font-bold text-indigo-600">12,345 AED</div>
+                    </div>
+                </div>
+
+                <!-- Flight Details -->
+                <div class="mt-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-sm font-semibold text-gray-700 flex items-center">
+                            <i class="fas fa-plane-departure text-indigo-500 mr-2"></i>
+                            Flight Details
+                        </h3>
+                        <span class="text-xs bg-indigo-100 text-indigo-800 py-1 px-2 rounded-full">5 flights</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Flight Card 1 -->
+                        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                            <div class="bg-gray-50 px-4 py-2 border-b border-gray-200 flex justify-between items-center">
+                                <span class="font-medium">21/04/2023</span>
+                                <span>FZ123</span>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-center bg-gray-50 py-2 rounded mb-3">
+                                    <div class="flex items-center">
+                                        <span>DXB</span>
+                                        <i class="fas fa-arrow-right mx-2 text-gray-400 text-xs"></i>
+                                        <span>IKA</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 mb-3">
+                                    <div class="text-center">
+                                        <div class="text-xs text-gray-500 mb-1">Reporting</div>
+                                        <div>08:00</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-xs text-gray-500 mb-1">Debriefing</div>
+                                        <div>14:30</div>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="text-center bg-indigo-50 py-2 rounded">
+                                        <div class="text-xs text-gray-500 mb-1">Hours</div>
+                                        <div class="font-medium text-indigo-700">6.0h</div>
+                                    </div>
+                                    <div class="text-center bg-green-50 py-2 rounded">
+                                        <div class="text-xs text-gray-500 mb-1">Flight Pay</div>
+                                        <div class="font-medium text-green-700">600 AED</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Flight Card 2 -->
+                        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm border-l-4 border-l-indigo-500">
+                            <div class="bg-gray-50 px-4 py-2 border-b border-gray-200 flex justify-between items-center">
+                                <span class="font-medium">19/04/2023</span>
+                                <span>FZ456</span>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-center bg-gray-50 py-2 rounded mb-3">
+                                    <div class="flex items-center">
+                                        <span>DXB</span>
+                                        <i class="fas fa-arrow-right mx-2 text-indigo-500 text-xs"></i>
+                                        <span>KHI</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 mb-3">
+                                    <div class="text-center">
+                                        <div class="text-xs text-gray-500 mb-1">Reporting</div>
+                                        <div>10:00</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-xs text-gray-500 mb-1">Debriefing</div>
+                                        <div>15:00</div>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="text-center bg-indigo-50 py-2 rounded">
+                                        <div class="text-xs text-gray-500 mb-1">Hours</div>
+                                        <div class="font-medium text-indigo-700">4.5h</div>
+                                    </div>
+                                    <div class="text-center bg-green-50 py-2 rounded">
+                                        <div class="text-xs text-gray-500 mb-1">Flight Pay</div>
+                                        <div class="font-medium text-green-700">450 AED</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Flight Card 3 -->
+                        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm border-l-4 border-l-teal-500">
+                            <div class="bg-gray-50 px-4 py-2 border-b border-gray-200 flex justify-between items-center">
+                                <span class="font-medium">15/04/2023</span>
+                                <span>FZ789</span>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-center bg-gray-50 py-2 rounded mb-3">
+                                    <div class="flex items-center">
+                                        <span>DXB</span>
+                                        <i class="fas fa-arrow-right mx-2 text-teal-500 text-xs"></i>
+                                        <span>AMM</span>
+                                        <i class="fas fa-arrow-right mx-2 text-teal-500 text-xs"></i>
+                                        <span>DXB</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 mb-3">
+                                    <div class="text-center">
+                                        <div class="text-xs text-gray-500 mb-1">Reporting</div>
+                                        <div>07:30</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-xs text-gray-500 mb-1">Debriefing</div>
+                                        <div>16:00</div>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="text-center bg-indigo-50 py-2 rounded">
+                                        <div class="text-xs text-gray-500 mb-1">Hours</div>
+                                        <div class="font-medium text-indigo-700">8.0h</div>
+                                    </div>
+                                    <div class="text-center bg-green-50 py-2 rounded">
+                                        <div class="text-xs text-gray-500 mb-1">Flight Pay</div>
+                                        <div class="font-medium text-green-700">800 AED</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="text-center text-gray-500 text-sm mt-10 pt-6 border-t border-gray-200">
+                <div class="flex justify-center items-center">
+                    <i class="fas fa-plane text-indigo-400 mr-2"></i>
+                    <span>© 2025 Skywage - Cabin Crew Salary Calculator</span>
+                </div>
+                <div class="mt-2 text-xs text-gray-400">
+                    <a href="#" class="text-indigo-500 hover:text-indigo-700 transition-colors">Privacy Policy</a> |
+                    <a href="#" class="text-indigo-500 hover:text-indigo-700 transition-colors">Terms of Service</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript files -->
+    <script src="js/auth.js"></script>
+    <script src="js/constants.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/dataProcessing.js"></script>
+    <script src="js/components/flightDetailsTable.js"></script>
+    <script src="js/components/flightDetailsCards.js"></script>
+    <script src="js/components/monthlySummary.js"></script>
+    <script src="js/components/salaryBreakdown.js"></script>
+    <script src="js/components/deleteConfirmation.js"></script>
+    <script src="js/components/manualFlightEntry.js"></script>
+    <script src="js/multiMonthData.js"></script>
+    <script src="js/components/multiMonthVisualizations.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set user email
+            const userEmail = sessionStorage.getItem('userEmail');
+            const userEmailElement = document.getElementById('user-email');
+            if (userEmailElement && userEmail) {
+                userEmailElement.textContent = userEmail;
+            }
+
+            // Sign out button
+            const signOutButton = document.getElementById('sign-out-button');
+            if (signOutButton) {
+                signOutButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sessionStorage.removeItem('isAuthenticated');
+                    sessionStorage.removeItem('userPosition');
+                    sessionStorage.removeItem('userEmail');
+                    window.location.href = 'sign-in.html';
+                });
+            }
+
+            // Add flight button
+            const addFlightBtn = document.getElementById('add-flight-btn');
+            if (addFlightBtn) {
+                addFlightBtn.addEventListener('click', function() {
+                    const formContainer = document.getElementById('manual-flight-form-container');
+                    if (formContainer) {
+                        formContainer.classList.remove('hidden');
+                        // Here you would normally call a function to render the form
+                        // For demo purposes, we'll just add a placeholder
+                        formContainer.innerHTML = `
+                            <div class="chart-card-header">
+                                <div class="chart-card-title">Add Flight Manually</div>
+                            </div>
+                            <div class="p-4">
+                                <form id="manual-flight-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                                        <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Flight Number</label>
+                                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="e.g. FZ123">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Departure</label>
+                                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="e.g. DXB">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Destination</label>
+                                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="e.g. IKA">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Reporting Time</label>
+                                        <input type="time" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Debriefing Time</label>
+                                        <input type="time" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                                    </div>
+                                    <div class="md:col-span-2 mt-4">
+                                        <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700">
+                                            Add Flight
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        `;
+                    }
+                });
+            }
+
+            // CSV upload
+            const csvUpload = document.getElementById('csv-upload');
+            if (csvUpload) {
+                csvUpload.addEventListener('change', function(e) {
+                    if (e.target.files.length > 0) {
+                        // Here you would normally process the CSV file
+                        // For demo purposes, we'll just show a success message
+                        alert('CSV file uploaded successfully!');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

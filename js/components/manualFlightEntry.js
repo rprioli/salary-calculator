@@ -488,6 +488,12 @@ function handleManualFlightSubmit(selectedRole) {
         newCalculationResults.perDiem +
         newCalculationResults.asbyPay;
 
+    // Update current month key
+    currentMonthKey = `${rosterMonth}-${rosterYear}`;
+
+    // Save to multi-month data
+    addMonthData(rosterMonth, rosterYear, parsedFlights, newCalculationResults);
+
     // Update global calculation results
     calculationResults = newCalculationResults;
 

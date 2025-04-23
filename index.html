@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Calculate cabin crew salary based on roster data">
-    <title>Skywage Salary Calculator</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Skywage Dashboard</title>
+    <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
     <!-- Include Tailwind CSS from CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Include Papa Parse for CSV parsing -->
@@ -13,180 +18,229 @@
     <!-- Include Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Authentication check script -->
-    <script>
-        // Check if user is authenticated (for demo purposes)
-        // In a real app, this would validate a token with the backend
-        function checkAuthentication() {
-            // For demo purposes, we'll use sessionStorage
-            // In production, you would verify a JWT token or session cookie
-            const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
-
-            // If not authenticated, redirect to sign-in
-            if (!isAuthenticated) {
-                window.location.href = 'sign-in.html';
-            }
-        }
-
-        // Run the check when the page loads
-        checkAuthentication();
-    </script>
+    <!-- Authentication is now handled by auth.js -->
 </head>
-<body class="bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen">
-    <div id="app" class="py-10 px-4">
-        <div class="w-full bg-white rounded-lg shadow-lg p-6 max-w-6xl mx-auto border-t-4 border-indigo-500">
-            <div class="flex justify-between items-start pb-6 mb-6">
-                <!-- Logo and App Name -->
-                <div class="flex items-center">
-                    <div class="flex items-center mb-2">
-                        <i class="fas fa-plane text-indigo-500 text-3xl mr-3"></i>
-                        <h1 class="text-3xl font-semibold text-gray-800">Skywage</h1>
-                    </div>
-                    <p class="text-gray-600 ml-3">Cabin Crew Salary Calculator</p>
-                </div>
+<body style="margin: 0; padding: 0; overflow-x: hidden;">
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-logo">
+                <i class="fas fa-plane"></i>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="index.html" class="sidebar-menu-item active">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="statistics.html" class="sidebar-menu-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Statistics</span>
+                </a>
+                <a href="profile.html" class="sidebar-menu-item">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="#" class="sidebar-menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="#" class="sidebar-menu-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Help</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" id="sign-out-button">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sign Out</span>
+                </a>
+            </div>
+        </aside>
 
-                <!-- User Menu -->
-                <div id="user-menu" class="relative">
-                    <button id="user-menu-button" class="flex items-center text-gray-700 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 rounded-full p-1">
-                        <span id="user-email" class="mr-2 text-sm hidden md:inline">user@example.com</span>
-                        <div class="bg-indigo-100 rounded-full p-2">
-                            <i class="fas fa-user text-indigo-600"></i>
+        <!-- Main Content -->
+        <main class="dashboard-content">
+            <header class="dashboard-header">
+                <h1 class="dashboard-title">Dashboard & Calculator <span class="text-sm font-normal text-gray-500">(Current Month)</span></h1>
+                <div class="dashboard-user">
+                    <div class="dashboard-user-info">
+                        <div class="dashboard-user-name" id="user-name">Welcome back!</div>
+                        <div class="dashboard-user-role" id="user-email">user@example.com</div>
+                    </div>
+                    <div class="dashboard-user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Rooms/Categories Section -->
+            <div class="mb-6">
+                <div class="card-grid">
+                    <!-- Basic Salary Card -->
+                    <div class="stat-card active">
+                        <div class="stat-card-header">
+                            <div class="stat-card-title">Basic Salary</div>
+                            <div class="stat-card-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
                         </div>
-                    </button>
+                        <div class="stat-card-value" id="basic-salary">8,275</div>
+                        <div class="stat-card-label">AED</div>
+                        <svg class="stat-card-circle" viewBox="0 0 36 36">
+                            <path class="circle-progress-background" fill="none" stroke="#e5e7eb" stroke-width="3"
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path class="circle-progress-value" fill="none" stroke="#4338ca" stroke-width="3"
+                                stroke-dasharray="85, 100"
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                    </div>
 
-                    <!-- Dropdown Menu -->
-                    <div id="user-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden">
-                        <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50">
-                            <i class="fas fa-user-circle mr-2"></i>Profile
-                        </a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50">
-                            <i class="fas fa-cog mr-2"></i>Settings
-                        </a>
-                        <div class="border-t border-gray-100"></div>
-                        <a href="#" id="sign-out-button" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50">
-                            <i class="fas fa-sign-out-alt mr-2"></i>Sign out
-                        </a>
+                    <!-- Flight Pay Card -->
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-card-title">Flight Pay</div>
+                            <div class="stat-card-icon bg-green-light">
+                                <i class="fas fa-plane text-green"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card-value" id="flight-pay">0</div>
+                        <div class="stat-card-label">AED</div>
+                        <svg class="stat-card-circle" viewBox="0 0 36 36">
+                            <path class="circle-progress-background" fill="none" stroke-width="3"
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path class="circle-progress-value" fill="none" stroke="#10b981" stroke-width="3"
+                                stroke-dasharray="0, 100"
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                    </div>
+
+                    <!-- Flight Hours Card -->
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-card-title">Flight Hours</div>
+                            <div class="stat-card-icon bg-blue-light">
+                                <i class="fas fa-clock text-blue"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card-value" id="flight-hours">0.0</div>
+                        <div class="stat-card-label">Hours</div>
+                        <svg class="stat-card-circle" viewBox="0 0 36 36">
+                            <path class="circle-progress-background" fill="none" stroke-width="3"
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path class="circle-progress-value" fill="none" stroke="#3b82f6" stroke-width="3"
+                                stroke-dasharray="0, 100"
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                    </div>
+
+                    <!-- Total Salary Card -->
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-card-title">Total Salary</div>
+                            <div class="stat-card-icon bg-yellow-light">
+                                <i class="fas fa-coins text-yellow"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card-value" id="total-salary">8,275</div>
+                        <div class="stat-card-label">AED</div>
+                        <svg class="stat-card-circle" viewBox="0 0 36 36">
+                            <path class="circle-progress-background" fill="none" stroke-width="3"
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path class="circle-progress-value" fill="none" stroke="#f59e0b" stroke-width="3"
+                                stroke-dasharray="55, 100"
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
                     </div>
                 </div>
             </div>
 
-            <div id="role-selector" class="bg-white rounded-lg shadow-md p-6 mb-6 border-t-4 border-indigo-500">
-                <h2 class="text-xl font-medium text-gray-700 mb-6 flex items-center">
-                    <i class="fas fa-user-tie text-indigo-500 mr-2"></i>
-                    Select Your Role
-                </h2>
-                <div class="flex flex-col md:flex-row justify-around gap-4 mb-6">
-                    <button id="ccm-button" class="py-4 px-6 text-lg rounded-md transition-all bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50" aria-label="Select Cabin Crew Member role">
-                        <i class="fas fa-user mr-2"></i> Cabin Crew Member (CCM)
-                    </button>
-                    <button id="sccm-button" class="py-4 px-6 text-lg rounded-md transition-all bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50" aria-label="Select Senior Cabin Crew Member role">
-                        <i class="fas fa-user-shield mr-2"></i> Senior Cabin Crew Member (SCCM)
-                    </button>
+            <!-- Charts Section moved to Statistics page -->
+
+            <!-- Current Month Flights Table -->
+            <div class="table-card">
+                <div class="table-card-header">
+                    <div class="table-card-title">Current Month Flights <span id="current-month-display" class="text-sm font-normal text-gray-500"></span></div>
+                    <div class="table-card-actions">
+                        <a href="statistics.html" class="text-xs text-blue-600 hover:text-blue-800">View Statistics</a>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="dashboard-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Flight</th>
+                                <th>Route</th>
+                                <th>Hours</th>
+                                <th>Pay</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-flights-table">
+                            <!-- Flight data will be populated by JavaScript -->
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-gray-500">No flights data available. Please upload your roster.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
-            <div id="file-upload" class="mt-6 hidden animate-fade-in">
-                <h2 class="text-xl font-medium text-gray-700 flex items-center mb-6">
-                    <i class="fas fa-calculator text-indigo-500 mr-2"></i>
-                    Calculate Your Salary
-                </h2>
-
-                <div class="flex flex-col md:flex-row justify-center items-center gap-6 mb-8">
+            <!-- Calculator Section -->
+            <div class="chart-card mb-6">
+                <div class="chart-card-header">
+                    <div class="chart-card-title">Calculate Your Salary</div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                     <!-- Upload Roster Button -->
-                    <label for="csv-upload" class="flex-1 flex flex-col items-center p-6 bg-white border border-indigo-200 rounded-lg shadow-sm hover:shadow-md transition-all cursor-pointer max-w-xs mx-auto" tabindex="0" role="button" aria-label="Upload roster CSV file">
-                        <div class="bg-indigo-100 p-4 rounded-full mb-4">
-                            <i class="fas fa-file-upload text-indigo-500 text-2xl"></i>
+                    <label for="csv-upload" class="flex flex-col items-center p-6 bg-gray-50 border border-gray-200 rounded-lg hover:shadow-md transition-all cursor-pointer">
+                        <div class="bg-blue-100 p-4 rounded-full mb-4">
+                            <i class="fas fa-file-upload text-blue-600 text-2xl"></i>
                         </div>
                         <h3 class="text-lg font-medium text-gray-700 mb-1">Upload Roster</h3>
                         <p class="text-sm text-gray-500 text-center">Import your CSV file</p>
-                        <input id="csv-upload" type="file" accept=".csv" class="hidden" aria-label="Upload roster CSV file">
+                        <a href="sample-roster.csv" download class="text-xs text-blue-600 hover:text-blue-800 mt-2 inline-block">Download Sample CSV</a>
+                        <input id="csv-upload" type="file" accept=".csv" class="hidden">
                     </label>
 
-                    <!-- OR Divider -->
-                    <div class="flex flex-col items-center justify-center py-4 md:py-0">
-                        <div class="w-px h-12 bg-gray-300 hidden md:block"></div>
-                        <div class="text-gray-500 font-medium my-2 md:my-4">OR</div>
-                        <div class="w-px h-12 bg-gray-300 hidden md:block"></div>
-                    </div>
-
                     <!-- Add Manually Button -->
-                    <button id="add-flight-btn" class="flex-1 flex flex-col items-center p-6 bg-white border border-indigo-200 rounded-lg shadow-sm hover:shadow-md transition-all max-w-xs mx-auto">
-                        <div class="bg-indigo-100 p-4 rounded-full mb-4">
-                            <i class="fas fa-plus text-indigo-500 text-2xl"></i>
+                    <button id="add-flight-btn" class="flex flex-col items-center p-6 bg-gray-50 border border-gray-200 rounded-lg hover:shadow-md transition-all">
+                        <div class="bg-green-100 p-4 rounded-full mb-4">
+                            <i class="fas fa-plus text-green-600 text-2xl"></i>
                         </div>
                         <h3 class="text-lg font-medium text-gray-700 mb-1">Add Manually</h3>
                         <p class="text-sm text-gray-500 text-center">Enter duty details</p>
                     </button>
                 </div>
-
-                <div class="flex flex-col items-center gap-4 mt-4">
-                    <div id="loading-indicator" class="flex flex-col items-center hidden">
-                        <div class="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-                        <p class="mt-3 text-gray-700 font-medium">Processing roster data...</p>
-                        <p class="text-sm text-gray-500">This may take a few moments</p>
-                    </div>
-
-                    <div id="error-container" class="w-full max-w-md p-4 bg-red-50 rounded-lg text-red-600 flex items-start hidden shadow-md border border-red-200 animate-fade-in">
-                        <i class="fas fa-exclamation-circle text-red-500 mr-3 mt-0.5 flex-shrink-0"></i>
-                        <span id="error-message" class="text-red-700"></span>
-                    </div>
-
-                    <div id="success-container" class="w-full max-w-md p-4 bg-green-50 rounded-lg text-green-600 flex items-start hidden shadow-md border border-green-200 animate-fade-in">
-                        <i class="fas fa-check-circle text-green-500 mr-3 mt-0.5 flex-shrink-0"></i>
-                        <span id="success-message" class="text-green-700">Roster data processed successfully!</span>
-                    </div>
-                </div>
             </div>
 
-            <div id="manual-flight-form-container" class="mt-6 mb-6 hidden">
+            <!-- Manual Flight Form Container -->
+            <div id="manual-flight-form-container" class="chart-card mb-6 hidden">
                 <!-- Manual flight entry form will be injected here by JavaScript -->
             </div>
 
-            <div id="results-container" class="bg-white rounded-lg shadow-md p-6 hidden animate-fade-in">
-                <h2 class="text-xl font-medium text-gray-700 mb-8 flex items-center">
-                    <i class="fas fa-calculator text-indigo-500 mr-2"></i>
-                    Salary Calculation Results
-                </h2>
-
-                <div id="summary-sections" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                    <!-- Monthly Summary and Salary Breakdown will be injected here by JavaScript -->
-                </div>
-
-                <div class="mt-10">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-lg font-medium text-gray-700 flex items-center">
-                            <i class="fas fa-plane-departure text-indigo-500 mr-2"></i>
-                            Flight Details
-                        </h3>
-                        <span id="flight-count" class="text-sm bg-indigo-100 text-indigo-800 py-1 px-3 rounded-full font-medium">0 flights</span>
-                    </div>
-
-                    <div id="flight-details-table-container" class="overflow-x-auto bg-white rounded-lg shadow-sm">
-                        <!-- Flight details table will be injected here by JavaScript -->
-                    </div>
-                </div>
-            </div>
-
-            <div id="delete-confirmation" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50 backdrop-blur-sm hidden">
-                <!-- Delete confirmation dialog will be injected here by JavaScript -->
-            </div>
-
+            <!-- Footer -->
             <div class="text-center text-gray-500 text-sm mt-10 pt-6 border-t border-gray-200">
                 <div class="flex justify-center items-center">
-                    <i class="fas fa-plane text-indigo-400 mr-2"></i>
+                    <i class="fas fa-plane text-blue-400 mr-2"></i>
                     <span>© 2025 Skywage - Cabin Crew Salary Calculator</span>
                 </div>
                 <div class="mt-2 text-xs text-gray-400">
-                    <a href="#" class="text-indigo-500 hover:text-indigo-700 transition-colors">Privacy Policy</a> |
-                    <a href="#" class="text-indigo-500 hover:text-indigo-700 transition-colors">Terms of Service</a>
+                    <a href="#" class="text-blue-500 hover:text-blue-700 transition-colors">Privacy Policy</a> |
+                    <a href="#" class="text-blue-500 hover:text-blue-700 transition-colors">Terms of Service</a>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
     <!-- JavaScript files -->
-    <script src="js/auth.js"></script>
+    <!-- Core modules -->
     <script src="js/constants.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/ui-utils.js"></script>
+    <script src="js/data-manager.js"></script>
+    <script src="js/calculations.js"></script>
+    <script src="js/components.js"></script>
+
+    <!-- Legacy modules -->
     <script src="js/utils.js"></script>
     <script src="js/dataProcessing.js"></script>
     <script src="js/components/flightDetailsTable.js"></script>
@@ -195,6 +249,869 @@
     <script src="js/components/salaryBreakdown.js"></script>
     <script src="js/components/deleteConfirmation.js"></script>
     <script src="js/components/manualFlightEntry.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/multiMonthData.js"></script>
+    <script src="js/components/multiMonthVisualizations.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script>
+        // Add a timestamp to force refresh: 1714071600000
+        // Clear localStorage to ensure we're starting fresh
+        function clearLocalStorage() {
+            localStorage.removeItem('multiMonthData');
+            console.log('Cleared localStorage');
+        }
+
+        // Uncomment this line to clear localStorage when needed
+        clearLocalStorage(); // Clear localStorage to ensure accurate values
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load multi-month data
+            const multiMonthData = JSON.parse(localStorage.getItem('multiMonthData')) || {};
+
+            // Get current month data
+            const currentDate = new Date();
+            const currentMonthKey = `${currentDate.getMonth() + 1}-${currentDate.getFullYear()}`;
+            const currentMonthData = multiMonthData[currentMonthKey] || { calculationResults: {} };
+
+            // Update dashboard cards
+            updateDashboardCards(currentMonthData, multiMonthData);
+
+            // Display current month name
+            const currentMonthDisplay = document.getElementById('current-month-display');
+            if (currentMonthDisplay) {
+                const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                currentMonthDisplay.textContent = `(${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()})`;
+            }
+
+            // Set up event listeners
+            setupDashboardEventListeners();
+
+            // Don't load sample data automatically
+            // Only display data from actual user uploads
+        });
+
+        // Function to load sample data for testing
+        function loadSampleData() {
+            console.log('Loading sample data for testing...');
+            // Sample CSV data that matches our current_month_roster.csv
+            const sampleCsvData = `date,flight,from,to,hours,pay
+2024-04-01,FZ123,DXB,IKA,5.5,550
+2024-04-05,FZ456,DXB,KWI,3.2,320
+2024-04-10,FZ789,DXB,AMM,4.0,400
+2024-04-15,FZ234,DXB,MCT,2.5,250
+2024-04-20,FZ567,DXB,BAH,2.0,200
+2024-04-25,FZ890,DXB,DOH,3.0,300`;
+
+            // Process the sample data
+            processRosterData(sampleCsvData);
+        }
+
+        function updateDashboardCards(currentMonthData, multiMonthData) {
+            // Get the user's role
+            const selectedRole = sessionStorage.getItem('userPosition') === 'sccm' ? 'SCCM' : 'CCM';
+
+            // Calculate fixed components total (for display if no data available)
+            const defaultBasicSalary = SALARY_DATA[selectedRole].basicSalary;
+            const defaultHousingAllowance = SALARY_DATA[selectedRole].housingAllowance;
+            const defaultTransportationAllowance = SALARY_DATA[selectedRole].transportationAllowance;
+            const defaultFixedTotal = defaultBasicSalary + defaultHousingAllowance + defaultTransportationAllowance;
+
+            // Update basic salary (showing the fixed components total)
+            const basicSalary = currentMonthData.calculationResults?.basicSalary || defaultBasicSalary;
+            const housingAllowance = currentMonthData.calculationResults?.housingAllowance || defaultHousingAllowance;
+            const transportationAllowance = currentMonthData.calculationResults?.transportationAllowance || defaultTransportationAllowance;
+            const fixedTotal = basicSalary + housingAllowance + transportationAllowance;
+
+            const basicSalaryElement = document.getElementById('basic-salary');
+            if (basicSalaryElement) {
+                basicSalaryElement.textContent = fixedTotal.toLocaleString();
+
+                // Update circle progress
+                const basicSalaryCircle = basicSalaryElement.closest('.stat-card').querySelector('.circle-progress-value');
+                if (basicSalaryCircle) {
+                    // Set progress to 100% for fixed components (they're always fully paid)
+                    basicSalaryCircle.setAttribute('stroke-dasharray', '100, 100');
+                }
+            }
+
+            // Update flight pay
+            // Default to zero until data is uploaded
+            const defaultFlightHours = 0;
+            const defaultFlightPay = 0;
+            const flightPay = currentMonthData.calculationResults?.flightPay || defaultFlightPay;
+            const flightPayElement = document.getElementById('flight-pay');
+            if (flightPayElement) {
+                flightPayElement.textContent = flightPay.toLocaleString();
+
+                // Update circle progress
+                const flightPayCircle = flightPayElement.closest('.stat-card').querySelector('.circle-progress-value');
+                if (flightPayCircle) {
+                    // Calculate percentage of flight pay compared to a target (e.g., 100 hours of flight pay)
+                    const targetFlightPay = 100 * SALARY_DATA[selectedRole].flightPayRate;
+                    const percentage = Math.min(Math.round((flightPay / targetFlightPay) * 100), 100);
+                    flightPayCircle.setAttribute('stroke-dasharray', `${percentage}, 100`);
+                }
+            }
+
+            // Update flight hours
+            const flightHours = currentMonthData.calculationResults?.totalFlightHours || defaultFlightHours;
+            const flightHoursElement = document.getElementById('flight-hours');
+            if (flightHoursElement) {
+                flightHoursElement.textContent = flightHours.toFixed(1);
+
+                // Update circle progress
+                const flightHoursCircle = flightHoursElement.closest('.stat-card').querySelector('.circle-progress-value');
+                if (flightHoursCircle) {
+                    // Calculate percentage of flight hours compared to max hours (100 hours)
+                    const percentage = Math.min(Math.round((flightHours / 100) * 100), 100);
+                    flightHoursCircle.setAttribute('stroke-dasharray', `${percentage}, 100`);
+                }
+            }
+
+            // Update total salary
+            // Default to fixed components only (no flight pay until data is uploaded)
+            const defaultTotalSalary = defaultFixedTotal;
+            const totalSalary = currentMonthData.calculationResults?.totalSalary || defaultTotalSalary;
+            const totalSalaryElement = document.getElementById('total-salary');
+            if (totalSalaryElement) {
+                totalSalaryElement.textContent = totalSalary.toLocaleString();
+
+                // Update circle progress
+                const totalSalaryCircle = totalSalaryElement.closest('.stat-card').querySelector('.circle-progress-value');
+                if (totalSalaryCircle) {
+                    // Calculate target salary based on role (basic + housing + transportation + 100 hours flight pay)
+                    const targetSalary = defaultFixedTotal + (100 * SALARY_DATA[selectedRole].flightPayRate);
+                    const percentage = Math.min(Math.round((totalSalary / targetSalary) * 100), 100);
+                    totalSalaryCircle.setAttribute('stroke-dasharray', `${percentage}, 100`);
+                }
+            }
+
+            // Update recent flights table
+            updateRecentFlightsTable(currentMonthData.flights || []);
+        }
+
+        function updateRecentFlightsTable(flights) {
+            console.log('Updating flights table with:', flights);
+            const recentFlightsTable = document.getElementById('recent-flights-table');
+            if (!recentFlightsTable) {
+                console.error('Could not find recent-flights-table element');
+                return;
+            }
+
+            if (!flights || flights.length === 0) {
+                console.log('No flights data available');
+                recentFlightsTable.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-gray-500">No flights data available. Please upload your roster.</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            // Get current month and year
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth();
+            const currentYear = currentDate.getFullYear();
+            console.log(`Current month/year: ${currentMonth}/${currentYear}`);
+
+            // For testing purposes, let's show all flights regardless of month
+            // This will help us verify that the CSV data is being processed correctly
+            const allFlights = [...flights];
+            console.log('All flights (unfiltered):', allFlights);
+
+            // TEMPORARY: For testing, show all flights regardless of month
+            // This will help us debug the CSV parsing issue
+            const currentMonthFlights = flights;
+            console.log('Showing all flights for testing:', currentMonthFlights);
+
+            /* COMMENTED OUT FOR TESTING
+            // Filter flights for current month
+            const currentMonthFlights = flights.filter(flight => {
+                // Make sure flight.date is a valid date string
+                if (!flight.date) {
+                    console.warn('Flight missing date:', flight);
+                    return false;
+                }
+
+                try {
+                    // Parse the date string into a Date object
+                    const flightDate = new Date(flight.date);
+
+                    // Check if the date is valid
+                    if (isNaN(flightDate.getTime())) {
+                        console.warn('Invalid date:', flight.date);
+                        return false;
+                    }
+
+                    // For testing, let's use the current month from the system
+                    // In production, you might want to allow users to select a month
+                    const isCurrentMonth = flightDate.getMonth() === currentMonth && flightDate.getFullYear() === currentYear;
+
+                    console.log(`Flight date: ${flight.date}, parsed as: ${flightDate.toISOString()}, is current month: ${isCurrentMonth}`);
+                    return isCurrentMonth;
+                } catch (e) {
+                    console.error('Error parsing flight date:', flight.date, e);
+                    return false;
+                }
+            });
+            */
+
+            console.log('Filtered current month flights:', currentMonthFlights);
+
+            // Sort flights by date (chronological order for the month)
+            const sortedFlights = [...currentMonthFlights].sort((a, b) => {
+                return new Date(a.date) - new Date(b.date);
+            });
+
+            // If no flights for current month, show a message
+            if (sortedFlights.length === 0) {
+                recentFlightsTable.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-gray-500">No flights found in the uploaded roster.</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            // Log the flights we're about to render
+            console.log('Flights to render:', JSON.stringify(sortedFlights));
+
+            // Render flights
+            recentFlightsTable.innerHTML = sortedFlights.map((flight, index) => {
+                // Safely handle potentially undefined values
+                const flightHours = flight.flightHours || 0;
+                const flightPay = flight.flightPay || 0;
+
+                // Log each flight as we render it
+                console.log(`Rendering flight ${index}:`, {
+                    date: flight.date,
+                    formattedDate: formatDate(flight.date),
+                    flightNumber: flight.flightNumber,
+                    departure: flight.departure,
+                    destination: flight.destination,
+                    hours: flightHours,
+                    pay: flightPay
+                });
+
+                return `
+                <tr>
+                    <td>${formatDate(flight.date)}</td>
+                    <td>${flight.flightNumber || 'Unknown'}</td>
+                    <td>${flight.departure || 'DXB'} - ${flight.destination || 'Unknown'}</td>
+                    <td>${typeof flightHours === 'number' ? flightHours.toFixed(1) : '0.0'}h</td>
+                    <td>${flightPay} AED</td>
+                </tr>
+                `;
+            }).join('');
+
+            // Update the count in the header
+            const flightCountElement = document.querySelector('.table-card-actions span');
+            if (flightCountElement) {
+                flightCountElement.textContent = `${sortedFlights.length} flights`;
+            } else {
+                // If the count element doesn't exist, create it
+                const actionsDiv = document.querySelector('.table-card-actions');
+                if (actionsDiv) {
+                    const countSpan = document.createElement('span');
+                    countSpan.className = 'text-xs bg-blue-100 text-blue-800 py-1 px-2 rounded-full ml-2';
+                    countSpan.textContent = `${sortedFlights.length} flights`;
+                    actionsDiv.appendChild(countSpan);
+                }
+            }
+        }
+
+        function formatDate(dateString) {
+            try {
+                const date = new Date(dateString);
+
+                // Check if the date is valid
+                if (isNaN(date.getTime())) {
+                    console.warn('Invalid date in formatDate:', dateString);
+                    return 'Invalid date';
+                }
+
+                // Format as DD MMM (e.g., 15 Apr) with day of week
+                return date.toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: 'short',
+                    weekday: 'short'
+                });
+            } catch (e) {
+                console.error('Error formatting date:', dateString, e);
+                return 'Error';
+            }
+        }
+
+        function processRosterData(csvData) {
+            // Check if the data is JSON format
+            if (csvData.trim().startsWith('[') && csvData.trim().endsWith(']')) {
+                console.log('Detected JSON format data');
+                try {
+                    const jsonData = JSON.parse(csvData);
+                    console.log('Successfully parsed JSON data:', jsonData.slice(0, 3));
+
+                    // Process the JSON data directly
+                    processFlightData(jsonData);
+                    return;
+                } catch (e) {
+                    console.error('Failed to parse as JSON, falling back to CSV parsing:', e);
+                }
+            }
+
+            // Check if the data contains 'flights to render:' which indicates a specific JSON format
+            if (csvData.includes('flights to render:')) {
+                console.log('Detected special JSON format with "flights to render:"');
+                try {
+                    // Extract the JSON part after 'flights to render:'
+                    const jsonPart = csvData.split('flights to render:')[1].trim();
+                    const jsonData = JSON.parse(jsonPart);
+                    console.log('Successfully parsed special JSON data:', jsonData.slice(0, 3));
+
+                    // Process the JSON data directly
+                    processFlightData(jsonData);
+                    return;
+                } catch (e) {
+                    console.error('Failed to parse special JSON format, falling back to CSV parsing:', e);
+                }
+            }
+
+            // Parse CSV data using Papa Parse
+            Papa.parse(csvData, {
+                header: true,
+                skipEmptyLines: true,
+                transformHeader: function(header) {
+                    // Normalize headers to lowercase and remove spaces and special characters
+                    let normalizedHeader = header.toLowerCase().trim().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
+
+                    // Log the original header and initial normalization
+                    console.log(`Initial header normalization: '${header}' → '${normalizedHeader}'`);
+
+                    // Further normalize common header variations
+                    if (normalizedHeader.includes('flight') && normalizedHeader.includes('number')) normalizedHeader = 'flightnumber';
+                    if (normalizedHeader === 'flight' || normalizedHeader === 'flightno') normalizedHeader = 'flightnumber';
+                    if (normalizedHeader === 'from' || normalizedHeader === 'origin') normalizedHeader = 'departure';
+                    if (normalizedHeader === 'to' || normalizedHeader === 'dest') normalizedHeader = 'destination';
+                    if (normalizedHeader.includes('flight') && normalizedHeader.includes('hour')) normalizedHeader = 'flighthours';
+                    if (normalizedHeader === 'hours' || normalizedHeader === 'flighttime') normalizedHeader = 'flighthours';
+                    if (normalizedHeader.includes('flight') && normalizedHeader.includes('pay')) normalizedHeader = 'flightpay';
+                    if (normalizedHeader === 'pay' || normalizedHeader === 'payment') normalizedHeader = 'flightpay';
+                    if (normalizedHeader.includes('report')) normalizedHeader = 'reportingtime';
+                    if (normalizedHeader.includes('debrief')) normalizedHeader = 'debriefingtime';
+
+                    console.log(`Transforming header: '${header}' to '${normalizedHeader}'`);
+                    return normalizedHeader;
+                },
+                complete: function(results) {
+                    // Log the headers that were detected
+                    console.log('CSV Headers:', results.meta.fields);
+                    console.log('First row of CSV data:', results.data[0]);
+                    console.log('First row keys:', Object.keys(results.data[0]));
+                    console.log('First row values:', Object.values(results.data[0]));
+
+                    // Log the raw CSV data for debugging
+                    console.log('Raw CSV data (first 3 rows):', results.data.slice(0, 3));
+
+                    // Try to detect if this is a JSON string that needs parsing
+                    if (results.data.length > 0 && typeof results.data[0] === 'string') {
+                        console.log('Data appears to be string format, attempting to parse as JSON...');
+                        try {
+                            const parsedData = results.data.map(row => {
+                                try {
+                                    return JSON.parse(row);
+                                } catch (e) {
+                                    console.error('Failed to parse row as JSON:', row);
+                                    return row;
+                                }
+                            });
+                            console.log('Parsed JSON data (first 3 rows):', parsedData.slice(0, 3));
+                            results.data = parsedData;
+                        } catch (e) {
+                            console.error('Failed to parse data as JSON:', e);
+                        }
+                    }
+
+                    // Process the flight data
+                    processFlightData(results.data);
+                },
+                error: function(error) {
+                    console.error('Error parsing CSV:', error);
+
+                    // Show an error notification
+                    const notification = document.createElement('div');
+                    notification.className = 'fixed bottom-4 right-4 bg-red-500 text-white px-4 py-2 rounded-md shadow-lg';
+                    notification.textContent = 'Error processing roster file. Please check the format.';
+                    document.body.appendChild(notification);
+
+                    // Remove the notification after 3 seconds
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 3000);
+                }
+            });
+        }
+
+        function processFlightData(data) {
+            console.log('Processing flight data:', data.slice(0, 3));
+
+            // Transform the data into our flight format
+            const flights = data.map(row => {
+                console.log('Processing row:', row);
+
+                // Create a proper date object from the date string
+                let flightDate = row.date;
+                if (flightDate) {
+                    // Ensure the date is in YYYY-MM-DD format
+                    if (flightDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                        // Already in correct format
+                    } else if (flightDate.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
+                        // Convert from MM/DD/YYYY to YYYY-MM-DD
+                        const parts = flightDate.split('/');
+                        flightDate = `${parts[2]}-${parts[0].padStart(2, '0')}-${parts[1].padStart(2, '0')}`;
+                    }
+                } else {
+                    // Default to today if no date
+                    flightDate = new Date().toISOString().split('T')[0];
+                }
+
+                // Log all row keys and values for debugging
+                console.log('Row keys:', Object.keys(row));
+                console.log('Row values:', Object.values(row));
+
+                // Try to find the correct field names by checking all possible variations
+                let flightNumberField = Object.keys(row).find(key =>
+                    key.toLowerCase().includes('flight') && key.toLowerCase().includes('number') ||
+                    key.toLowerCase() === 'flight' ||
+                    key.toLowerCase() === 'flightno' ||
+                    key.toLowerCase() === 'flightnumber'
+                );
+
+                let departureField = Object.keys(row).find(key =>
+                    key.toLowerCase() === 'departure' ||
+                    key.toLowerCase() === 'from' ||
+                    key.toLowerCase() === 'origin'
+                );
+
+                let destinationField = Object.keys(row).find(key =>
+                    key.toLowerCase() === 'destination' ||
+                    key.toLowerCase() === 'to' ||
+                    key.toLowerCase() === 'dest'
+                );
+
+                let hoursField = Object.keys(row).find(key =>
+                    key.toLowerCase().includes('flight') && key.toLowerCase().includes('hour') ||
+                    key.toLowerCase() === 'hours' ||
+                    key.toLowerCase() === 'flighttime' ||
+                    key.toLowerCase() === 'flighthours'
+                );
+
+                let payField = Object.keys(row).find(key =>
+                    key.toLowerCase().includes('flight') && key.toLowerCase().includes('pay') ||
+                    key.toLowerCase() === 'pay' ||
+                    key.toLowerCase() === 'payment' ||
+                    key.toLowerCase() === 'flightpay'
+                );
+
+                let dateField = Object.keys(row).find(key =>
+                    key.toLowerCase() === 'date' ||
+                    key.toLowerCase() === 'flightdate' ||
+                    key.toLowerCase() === 'dutydate'
+                );
+
+                let reportingTimeField = Object.keys(row).find(key =>
+                    key.toLowerCase().includes('reporting') ||
+                    key.toLowerCase() === 'reportingtime' ||
+                    key.toLowerCase() === 'report'
+                );
+
+                let debriefingTimeField = Object.keys(row).find(key =>
+                    key.toLowerCase().includes('debriefing') ||
+                    key.toLowerCase() === 'debriefingtime' ||
+                    key.toLowerCase() === 'debrief'
+                );
+
+                console.log('Found fields:', {
+                    flightNumberField,
+                    departureField,
+                    destinationField,
+                    hoursField,
+                    payField,
+                    dateField,
+                    reportingTimeField,
+                    debriefingTimeField
+                });
+
+                // Create the flight object with all necessary properties
+                const flight = {
+                    date: dateField ? row[dateField] : flightDate,
+                    flightNumber: flightNumberField ? row[flightNumberField] : 'Unknown',
+                    departure: departureField ? row[departureField] : 'DXB',
+                    destination: destinationField ? row[destinationField] : 'Unknown',
+                    reportingTime: reportingTimeField ? row[reportingTimeField] : '08:00',
+                    debriefingTime: debriefingTimeField ? row[debriefingTimeField] : '14:00',
+                    // Calculate flight hours and pay
+                    flightHours: hoursField ? parseFloat(row[hoursField]) : 0,
+                    flightPay: payField ? parseFloat(row[payField]) : 0
+                };
+
+                // Validate the flight object
+                if (isNaN(flight.flightHours)) flight.flightHours = 0;
+                if (isNaN(flight.flightPay)) flight.flightPay = 0;
+
+                // Log the created flight object
+                console.log('Created flight object:', flight);
+
+                // Log the mapping from CSV to flight object
+                console.log('CSV to Flight mapping:', {
+                    'flight': (flightNumberField ? row[flightNumberField] : 'N/A') + ' → ' + flight.flightNumber,
+                    'from': (departureField ? row[departureField] : 'N/A') + ' → ' + flight.departure,
+                    'to': (destinationField ? row[destinationField] : 'N/A') + ' → ' + flight.destination,
+                    'hours': (hoursField ? row[hoursField] : 'N/A') + ' → ' + flight.flightHours,
+                    'pay': (payField ? row[payField] : 'N/A') + ' → ' + flight.flightPay
+                });
+
+                // Dump the entire row and flight object for debugging
+                console.log('Raw row data:', JSON.stringify(row));
+                console.log('Final flight object:', JSON.stringify(flight));
+
+                return flight;
+            });
+
+            // Get current month data from localStorage or create new
+            const currentDate = new Date();
+            const currentMonthKey = `${currentDate.getMonth() + 1}-${currentDate.getFullYear()}`;
+            const multiMonthData = JSON.parse(localStorage.getItem('multiMonthData')) || {};
+
+            // Create or update the current month data
+            if (!multiMonthData[currentMonthKey]) {
+                multiMonthData[currentMonthKey] = {
+                    flights: [],
+                    calculationResults: {}
+                };
+            }
+
+            // Add the new flights to the current month data
+            multiMonthData[currentMonthKey].flights = flights;
+
+            // Calculate totals
+            const totalFlightHours = flights.reduce((sum, flight) => sum + flight.flightHours, 0);
+            const totalFlightPay = flights.reduce((sum, flight) => sum + flight.flightPay, 0);
+
+            // Get the user's role from session storage
+            const selectedRole = sessionStorage.getItem('userPosition') === 'sccm' ? 'SCCM' : 'CCM';
+
+            // Calculate the complete salary using all components
+            const basicSalary = SALARY_DATA[selectedRole].basicSalary;
+            const housingAllowance = SALARY_DATA[selectedRole].housingAllowance;
+            const transportationAllowance = SALARY_DATA[selectedRole].transportationAllowance;
+
+            // For now, we're not calculating per diem and standby pay here
+            // Those would require more detailed flight analysis
+            const perDiem = 0;
+            const asbyPay = 0;
+
+            // Calculate total salary with all fixed components
+            const totalSalary = basicSalary + housingAllowance + transportationAllowance + totalFlightPay + perDiem + asbyPay;
+
+            // Update calculation results
+            multiMonthData[currentMonthKey].calculationResults = {
+                basicSalary: basicSalary,
+                housingAllowance: housingAllowance,
+                transportationAllowance: transportationAllowance,
+                flightPay: totalFlightPay,
+                perDiem: perDiem,
+                asbyPay: asbyPay,
+                totalFlightHours: totalFlightHours,
+                totalSalary: totalSalary
+            };
+
+            // Save to localStorage
+            localStorage.setItem('multiMonthData', JSON.stringify(multiMonthData));
+
+            // Update the dashboard
+            updateDashboardCards(multiMonthData[currentMonthKey], multiMonthData);
+
+            // Show a success notification instead of an alert
+            const notification = document.createElement('div');
+            notification.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg';
+            notification.textContent = 'Roster uploaded successfully!';
+            document.body.appendChild(notification);
+
+            // Remove the notification after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Helper function to show error notifications
+        window.showErrorNotification = function(message) {
+            // Use ui-utils if available
+            if (window.ui && window.ui.showNotification) {
+                window.ui.showNotification('error', message, 5000);
+            } else {
+                // Fallback to old method
+                const notification = document.createElement('div');
+                notification.className = 'fixed bottom-4 right-4 bg-red-500 text-white px-4 py-2 rounded-md shadow-lg';
+                notification.textContent = message;
+                document.body.appendChild(notification);
+
+                // Remove the notification after 5 seconds
+                setTimeout(() => {
+                    notification.remove();
+                }, 5000);
+            }
+        };
+
+        function setupDashboardEventListeners() {
+            // Sign out button
+            const signOutButton = document.getElementById('sign-out-button');
+            if (signOutButton) {
+                signOutButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sessionStorage.removeItem('isAuthenticated');
+                    sessionStorage.removeItem('userPosition');
+                    sessionStorage.removeItem('userEmail');
+                    window.location.href = 'sign-in.html';
+                });
+            }
+
+            // Set user email
+            const userEmail = sessionStorage.getItem('userEmail');
+            const userEmailElement = document.getElementById('user-email');
+            if (userEmailElement && userEmail) {
+                userEmailElement.textContent = userEmail;
+            }
+
+            // Add flight button
+            const addFlightBtn = document.getElementById('add-flight-btn');
+            if (addFlightBtn) {
+                addFlightBtn.addEventListener('click', function() {
+                    const formContainer = document.getElementById('manual-flight-form-container');
+                    if (formContainer) {
+                        formContainer.classList.remove('hidden');
+                        // Here you would normally call a function to render the form
+                        // For demo purposes, we'll just add a placeholder
+                        formContainer.innerHTML = `
+                            <div class="chart-card-header">
+                                <div class="chart-card-title">Add Flight Manually</div>
+                            </div>
+                            <div class="p-4">
+                                <form id="manual-flight-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                                        <input type="date" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Flight Number</label>
+                                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="e.g. FZ123">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Departure</label>
+                                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="e.g. DXB">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Destination</label>
+                                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="e.g. IKA">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Reporting Time</label>
+                                        <input type="time" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Debriefing Time</label>
+                                        <input type="time" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                                    </div>
+                                    <div class="md:col-span-2 mt-4">
+                                        <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">
+                                            Add Flight
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        `;
+                    }
+                });
+            }
+
+            // CSV upload
+            const csvUpload = document.getElementById('csv-upload');
+            if (csvUpload) {
+                csvUpload.addEventListener('change', function(e) {
+                    try {
+                        console.log('File input change event triggered');
+
+                        // Check if files exist
+                        if (!e.target.files) {
+                            console.error('No files property on event target');
+                            window.showErrorNotification('No file selected. Please try again.');
+                            return;
+                        }
+
+                        // Check if any files were selected
+                        if (e.target.files.length === 0) {
+                            console.error('No files selected');
+                            window.showErrorNotification('No file selected. Please try again.');
+                            return;
+                        }
+
+                        // Get the file
+                        const file = e.target.files[0];
+
+                        // Validate file
+                        if (!file) {
+                            console.error('File is null or undefined');
+                            window.showErrorNotification('Invalid file. Please try again.');
+                            return;
+                        }
+
+                        // Log file details
+                        console.log('Selected file:', file.name, file.type, file.size);
+
+                        // Show a loading notification
+                        const loadingNotification = document.createElement('div');
+                        loadingNotification.className = 'fixed bottom-4 right-4 bg-blue-500 text-white px-4 py-2 rounded-md shadow-lg';
+                        loadingNotification.textContent = 'Processing roster file...';
+                        document.body.appendChild(loadingNotification);
+
+                        // Create a new FileReader
+                        const reader = new FileReader();
+
+                        // Set up onload handler
+                        reader.onload = function(event) {
+                            try {
+                                console.log('FileReader onload event triggered');
+
+                                // Check if result exists
+                                if (!event.target || !event.target.result) {
+                                    console.error('No result in FileReader event');
+                                    loadingNotification.remove();
+                                    window.showErrorNotification('Error reading file content. Please try again.');
+                                    return;
+                                }
+
+                                const csvData = event.target.result;
+                                console.log('CSV data loaded, length:', csvData.length);
+                                console.log('First 100 chars:', csvData.substring(0, 100));
+
+                                // Remove the loading notification
+                                loadingNotification.remove();
+
+                                // Check if this is a flydubai roster format
+                                const isFlyDubaiFormat = csvData.includes('flydubai') && csvData.includes('Schedule Details');
+                                console.log('Is flydubai format:', isFlyDubaiFormat);
+
+                                if (isFlyDubaiFormat) {
+                                    // Process using the specialized function for flydubai format
+                                    console.log('Processing flydubai roster format...');
+
+                                    // Parse the CSV data using Papa Parse
+                                    Papa.parse(csvData, {
+                                        header: false, // Don't use header for flydubai format
+                                        skipEmptyLines: true,
+                                        complete: function(results) {
+                                            console.log('CSV parsed successfully, rows:', results.data.length);
+                                            console.log('First few rows:', results.data.slice(0, 10));
+
+                                            if (results.data && results.data.length > 0) {
+                                                // Get the user's role from session storage
+                                                const selectedRole = sessionStorage.getItem('userPosition') === 'sccm' ? 'SCCM' : 'CCM';
+
+                                                // Process the data using the function from dataProcessing.js
+                                                const result = window.processRosterData(results.data, selectedRole);
+
+                                                if (result && result.newParsedFlights) {
+                                                    console.log('Processed flights:', result.newParsedFlights);
+
+                                                    // Get current month data from localStorage or create new
+                                                    const monthKey = `${result.newRosterMonth}-${result.newRosterYear}`;
+                                                    let multiMonthData = JSON.parse(localStorage.getItem('multiMonthData')) || {};
+
+                                                    // Create or update the month data
+                                                    if (!multiMonthData[monthKey]) {
+                                                        multiMonthData[monthKey] = {
+                                                            flights: [],
+                                                            calculationResults: {}
+                                                        };
+                                                    }
+
+                                                    // Update with the new data
+                                                    multiMonthData[monthKey].flights = result.newParsedFlights;
+                                                    multiMonthData[monthKey].calculationResults = result.newCalculationResults;
+                                                    multiMonthData[monthKey].month = result.newRosterMonth;
+                                                    multiMonthData[monthKey].year = result.newRosterYear;
+
+                                                    // Save to localStorage
+                                                    localStorage.setItem('multiMonthData', JSON.stringify(multiMonthData));
+
+                                                    // Update the dashboard
+                                                    updateDashboardCards(multiMonthData[monthKey], multiMonthData);
+
+                                                    // Update the flights table
+                                                    console.log('Updating flights table with processed flights:', result.newParsedFlights);
+                                                    updateRecentFlightsTable(result.newParsedFlights);
+
+                                                    // Show success notification using ui-utils if available
+                                                    if (window.ui && window.ui.showNotification) {
+                                                        window.ui.showNotification('success', 'Roster uploaded successfully!');
+                                                    } else {
+                                                        // Fallback to old method
+                                                        const notification = document.createElement('div');
+                                                        notification.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg';
+                                                        notification.textContent = 'Roster uploaded successfully!';
+                                                        document.body.appendChild(notification);
+
+                                                        // Remove the notification after 3 seconds
+                                                        setTimeout(() => {
+                                                            notification.remove();
+                                                        }, 3000);
+                                                    }
+                                                } else {
+                                                    window.showErrorNotification('Error processing roster data. No flights found.');
+                                                }
+                                            } else {
+                                                window.showErrorNotification('No valid data found in the file.');
+                                            }
+                                        },
+                                        error: function(error) {
+                                            console.error('Error parsing CSV:', error);
+                                            window.showErrorNotification('Error parsing CSV file: ' + error.message);
+                                        }
+                                    });
+                                } else {
+                                    // Process as a regular CSV file
+                                    console.log('Processing regular CSV format...');
+                                    processRosterData(csvData);
+                                }
+                            } catch (err) {
+                                console.error('Error in FileReader onload handler:', err);
+                                loadingNotification.remove();
+                                window.showErrorNotification('Error processing file: ' + err.message);
+                            }
+                        };
+
+                        // Set up onerror handler
+                        reader.onerror = function(event) {
+                            console.error('FileReader error event:', event);
+                            console.error('FileReader error code:', reader.error ? reader.error.code : 'unknown');
+
+                            // Remove the loading notification if it exists
+                            if (loadingNotification.parentNode) {
+                                loadingNotification.remove();
+                            }
+
+                            // Show an error notification
+                            window.showErrorNotification('Error reading the file. Please try again.');
+                        };
+
+                        // Start reading the file
+                        console.log('Starting to read file as text...');
+                        reader.readAsText(file);
+                        console.log('ReadAsText called successfully');
+                    } catch (err) {
+                        console.error('Error in file upload handler:', err);
+                        window.showErrorNotification('Error processing file: ' + err.message);
+                    }
+                });
+            }
+        }
+    </script>
 </body>
 </html>

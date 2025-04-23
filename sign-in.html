@@ -16,13 +16,13 @@
         <!-- Logo and App Name -->
         <div class="text-center mb-10">
             <div class="flex justify-center items-center mb-2">
-                <i class="fas fa-plane text-indigo-500 text-4xl mr-3"></i>
+                <i class="fas fa-plane text-blue-600 text-4xl mr-3"></i>
                 <h1 class="text-4xl font-semibold text-gray-800">Skywage</h1>
             </div>
         </div>
 
         <!-- Sign In Form -->
-        <div class="bg-white rounded-lg shadow-lg p-8 border-t-4 border-indigo-500 animate-fade-in">
+        <div class="bg-white rounded-lg shadow-lg p-8 border-t-4 border-blue-600 animate-fade-in">
             <h2 class="text-2xl font-medium text-gray-700 mb-6 text-center">Welcome Back</h2>
 
             <form id="sign-in-form">
@@ -34,7 +34,7 @@
                             <i class="fas fa-envelope text-gray-400"></i>
                         </div>
                         <input type="email" id="email" name="email"
-                            class="pl-10 w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            class="pl-10 w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                             placeholder="your.email@example.com" required>
                     </div>
                 </div>
@@ -43,27 +43,27 @@
                 <div class="mb-6">
                     <div class="flex justify-between items-center mb-1">
                         <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                        <a href="#" class="text-xs text-indigo-600 hover:text-indigo-800">Forgot password?</a>
+                        <a href="#" class="text-xs text-blue-600 hover:text-blue-800">Forgot password?</a>
                     </div>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-lock text-gray-400"></i>
                         </div>
                         <input type="password" id="password" name="password"
-                            class="pl-10 w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            class="pl-10 w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                             placeholder="••••••••" required>
                     </div>
                 </div>
 
                 <!-- Remember Me Checkbox -->
                 <div class="flex items-center mb-6">
-                    <input type="checkbox" id="remember-me" name="remember-me" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                    <input type="checkbox" id="remember-me" name="remember-me" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                     <label for="remember-me" class="ml-2 block text-sm text-gray-700">Remember me</label>
                 </div>
 
                 <!-- Sign In Button -->
                 <button type="submit" id="sign-in-button"
-                    class="w-full bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-colors">
+                    class="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors">
                     <i class="fas fa-sign-in-alt mr-2"></i>Sign In
                 </button>
 
@@ -85,13 +85,19 @@
             <div class="text-center">
                 <p class="text-sm text-gray-600">
                     Don't have an account?
-                    <a href="register.html" class="font-medium text-indigo-600 hover:text-indigo-800">Register now</a>
+                    <a href="register.html" class="font-medium text-blue-600 hover:text-blue-800">Register now</a>
                 </p>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript for Sign In Functionality -->
+    <!-- JavaScript Dependencies -->
+    <script src="js/constants.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/ui-utils.js"></script>
+    <script src="js/data-manager.js"></script>
+
+    <!-- Page-specific JavaScript -->
     <script src="js/sign-in.js"></script>
 </body>
 </html>

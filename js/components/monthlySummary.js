@@ -66,11 +66,7 @@ function renderMonthlySummary(selectedRole, rosterMonth, rosterYear, calculation
         </div>`);
     }
 
-    // Add Total Salary section
-    contentSections.push(`<div class="flex justify-between py-3 mt-3 border-t-2 border-indigo-300 font-bold text-lg">
-        <span class="text-indigo-800"><i class="fas fa-money-bill-wave mr-2"></i>Total Salary:</span>
-        <span class="text-indigo-600 bg-indigo-100 px-3 py-1 rounded-lg">AED ${(calculationResults.totalSalary || 0).toFixed(2)}</span>
-    </div>`);
+    // Total Salary section removed as requested - now only shown in Salary Breakdown
 
     // Join all sections and set as innerHTML
     content.innerHTML = contentSections.join('');

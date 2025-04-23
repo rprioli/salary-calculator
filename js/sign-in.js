@@ -55,24 +55,46 @@ function simulateAuthentication(email, password) {
         errorMessage.classList.add('hidden');
     }
 
+    // Show loading indicator if ui-utils is available
+    let loadingIndicator;
+    if (window.ui && window.ui.showLoading) {
+        loadingIndicator = window.ui.showLoading('Signing in...');
+    }
+
     // Simulate API call delay
     setTimeout(function() {
         // Check if the user exists in our "database" (localStorage)
-        const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+        const registeredUsers = window.dataManager ?
+            window.dataManager.getRegisteredUsers() :
+            JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+
         const user = registeredUsers.find(u => u.email === email && u.password === password);
 
-        if (user) {
-            // Store authentication state
-            sessionStorage.setItem('isAuthenticated', 'true');
-            sessionStorage.setItem('userEmail', email);
-            sessionStorage.setItem('userAirline', user.airline);
-            sessionStorage.setItem('userPosition', user.position);
+        // Hide loading indicator if it was shown
+        if (loadingIndicator && window.ui && window.ui.hideLoading) {
+            window.ui.hideLoading(loadingIndicator);
+        }
 
-            // Redirect to the main application
-            window.location.href = 'index.html';
+        if (user) {
+            // Use auth module if available
+            if (window.auth && window.auth.signIn) {
+                window.auth.signIn(email, user.position, user.airline);
+                window.location.href = 'index.html';
+            } else {
+                // Fallback to direct sessionStorage manipulation
+                sessionStorage.setItem('isAuthenticated', 'true');
+                sessionStorage.setItem('userEmail', email);
+                sessionStorage.setItem('userAirline', user.airline);
+                sessionStorage.setItem('userPosition', user.position);
+
+                // Redirect to the main application
+                window.location.href = 'index.html';
+            }
         } else {
             // Show error message
-            if (errorMessage) {
+            if (window.ui && window.ui.showNotification) {
+                window.ui.showNotification('error', 'Invalid email or password. Please try again.');
+            } else if (errorMessage) {
                 const errorText = document.getElementById('error-text');
                 if (errorText) {
                     errorText.textContent = 'Invalid email or password. Please try again.';
