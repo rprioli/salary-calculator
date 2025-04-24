@@ -542,6 +542,15 @@
         }
 
         function processRosterData(csvData) {
+            // Ensure csvData is a string
+            if (typeof csvData !== 'string') {
+                console.error('csvData is not a string:', typeof csvData);
+                window.showErrorNotification('Error: Invalid data format. Please try again.');
+                return;
+            }
+
+            console.log('Processing roster data, type:', typeof csvData, 'length:', csvData.length);
+
             // Check if the data is JSON format
             if (csvData.trim().startsWith('[') && csvData.trim().endsWith(']')) {
                 console.log('Detected JSON format data');
@@ -962,6 +971,20 @@
                             return;
                         }
 
+                        // Check file type
+                        if (file.type && !file.type.match('text/csv') && !file.type.match('application/vnd.ms-excel') && !file.type.match('text/plain')) {
+                            console.error('File type not supported:', file.type);
+                            window.showErrorNotification('File type not supported. Please upload a CSV file.');
+                            return;
+                        }
+
+                        // Check file size (limit to 5MB)
+                        if (file.size > 5 * 1024 * 1024) {
+                            console.error('File too large:', file.size);
+                            window.showErrorNotification('File too large. Please upload a smaller file (max 5MB).');
+                            return;
+                        }
+
                         // Log file details
                         console.log('Selected file:', file.name, file.type, file.size);
 
@@ -987,8 +1010,15 @@
                                     return;
                                 }
 
+                                // Ensure we have a string
                                 const csvData = event.target.result;
-                                console.log('CSV data loaded, length:', csvData.length);
+                                if (typeof csvData !== 'string') {
+                                    console.error('FileReader result is not a string:', typeof csvData);
+                                    window.showErrorNotification('Error: Invalid file format. Please ensure you are uploading a text-based CSV file.');
+                                    return;
+                                }
+
+                                console.log('CSV data loaded, type:', typeof csvData, 'length:', csvData.length);
                                 console.log('First 100 chars:', csvData.substring(0, 100));
 
                                 // Remove the loading notification
