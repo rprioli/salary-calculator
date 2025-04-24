@@ -481,13 +481,27 @@
                 const flightHours = flight.flightHours || 0;
                 const flightPay = flight.flightPay || 0;
 
+                // Handle different flight data structures
+                // dataProcessing.js uses flight.flight for flight number and flight.sector for route
+                // while index.html uses flight.flightNumber, flight.departure, and flight.destination
+                const flightNumber = flight.flightNumber || flight.flight || 'Unknown';
+
+                // For the sector/route, check if we have a sector field or need to construct it
+                let route = '';
+                if (flight.sector) {
+                    // Use the sector field directly if available
+                    route = flight.sector;
+                } else {
+                    // Otherwise construct from departure and destination
+                    route = `${flight.departure || 'DXB'} - ${flight.destination || 'Unknown'}`;
+                }
+
                 // Log each flight as we render it
                 console.log(`Rendering flight ${index}:`, {
                     date: flight.date,
                     formattedDate: formatDate(flight.date),
-                    flightNumber: flight.flightNumber,
-                    departure: flight.departure,
-                    destination: flight.destination,
+                    flightNumber: flightNumber,
+                    route: route,
                     hours: flightHours,
                     pay: flightPay
                 });
@@ -495,8 +509,8 @@
                 return `
                 <tr>
                     <td>${formatDate(flight.date)}</td>
-                    <td>${flight.flightNumber || 'Unknown'}</td>
-                    <td>${flight.departure || 'DXB'} - ${flight.destination || 'Unknown'}</td>
+                    <td>${flightNumber}</td>
+                    <td>${route}</td>
                     <td>${typeof flightHours === 'number' ? flightHours.toFixed(1) : '0.0'}h</td>
                     <td>${flightPay} AED</td>
                 </tr>
