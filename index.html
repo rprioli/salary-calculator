@@ -1058,7 +1058,18 @@
                                                 try {
                                                     // Process the data using the function from dataProcessing.js
                                                     console.log('Calling processRosterData with', results.data.length, 'rows');
-                                                    const result = window.processRosterData(results.data, selectedRole);
+
+                                                    // Make sure we're passing the data correctly
+                                                    let result;
+                                                    if (Array.isArray(results.data)) {
+                                                        console.log('Results data is an array, passing directly');
+                                                        result = window.processRosterData(results.data, selectedRole);
+                                                    } else {
+                                                        console.error('Results data is not an array:', typeof results.data);
+                                                        window.showErrorNotification('Error: Invalid data format');
+                                                        return;
+                                                    }
+
                                                     console.log('processRosterData returned:', result);
 
                                                     if (result && result.newParsedFlights) {
@@ -1136,7 +1147,26 @@
                                 } else {
                                     // Process as a regular CSV file
                                     console.log('Processing regular CSV format...');
-                                    processRosterData(csvData);
+
+                                    // Parse the CSV data using Papa Parse first
+                                    Papa.parse(csvData, {
+                                        header: true,
+                                        skipEmptyLines: true,
+                                        complete: function(results) {
+                                            console.log('Regular CSV parsed successfully, rows:', results.data.length);
+
+                                            if (results.data && results.data.length > 0) {
+                                                processRosterData(results.data);
+                                            } else {
+                                                console.error('No valid data found in regular CSV format');
+                                                window.showErrorNotification('No valid data found in the file.');
+                                            }
+                                        },
+                                        error: function(error) {
+                                            console.error('Error parsing regular CSV:', error);
+                                            window.showErrorNotification('Error parsing CSV file: ' + error.message);
+                                        }
+                                    });
                                 }
                             } catch (err) {
                                 console.error('Error in FileReader onload handler:', err);

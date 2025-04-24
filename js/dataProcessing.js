@@ -178,15 +178,62 @@ function processFlightDuty(date, duties, details, reportTime, actualTimes, debri
 function processRosterData(rosterData, selectedRole) {
     console.log('processRosterData called with:', {
         rosterDataType: typeof rosterData,
+        isArray: Array.isArray(rosterData),
         rosterDataLength: rosterData ? rosterData.length : 0,
         selectedRole: selectedRole
     });
+
+    // Check if rosterData is valid
+    if (!rosterData) {
+        console.error('Roster data is null or undefined');
+        return null;
+    }
+
+    // Ensure rosterData is an array
+    if (!Array.isArray(rosterData)) {
+        console.error('Roster data is not an array:', typeof rosterData);
+
+        // If it's a string (CSV data), try to parse it
+        if (typeof rosterData === 'string') {
+            console.log('Roster data is a string, attempting to parse as CSV');
+            try {
+                // Use Papa Parse to convert the string to an array
+                const parseResult = Papa.parse(rosterData, {
+                    header: false,
+                    skipEmptyLines: true
+                });
+
+                if (parseResult.data && parseResult.data.length > 0) {
+                    console.log('Successfully parsed string to array with', parseResult.data.length, 'rows');
+                    rosterData = parseResult.data;
+                } else {
+                    console.error('Failed to parse string to valid array');
+                    return null;
+                }
+            } catch (error) {
+                console.error('Error parsing roster data string:', error);
+                return null;
+            }
+        } else if (typeof rosterData === 'object' && !Array.isArray(rosterData)) {
+            // If it's an object but not an array, it might be a Papa Parse result object
+            if (rosterData.data && Array.isArray(rosterData.data)) {
+                console.log('Roster data is a Papa Parse result object, extracting data array');
+                rosterData = rosterData.data;
+            } else {
+                console.error('Roster data is an object but not in expected format');
+                return null;
+            }
+        } else {
+            console.error('Roster data is in an unsupported format');
+            return null;
+        }
+    }
 
     // Log the first few rows of the roster data for debugging
     if (rosterData && rosterData.length > 0) {
         console.log('First 5 rows of roster data:', rosterData.slice(0, 5));
     } else {
-        console.error('Roster data is empty or invalid');
+        console.error('Roster data is empty or invalid after processing');
         return null;
     }
 

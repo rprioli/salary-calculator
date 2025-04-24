@@ -41,7 +41,7 @@ function calculateHoursBetween(startTime, endTime) {
     }
 }
 
-// Get the month number from a date string (format: DD/MM/YYYY)
+// Get the month number from a date string (supports multiple formats)
 function getMonthNumberFromDate(dateStr) {
     console.log('getMonthNumberFromDate called with:', dateStr);
 
@@ -50,30 +50,99 @@ function getMonthNumberFromDate(dateStr) {
         return null;
     }
 
-    // Try to extract the month from the date string
-    const dateParts = dateStr.split('/');
-    console.log('Date parts:', dateParts);
+    // Clean the date string
+    const cleanDateStr = dateStr.trim();
+    console.log('Cleaned date string:', cleanDateStr);
 
-    if (dateParts.length === 3) {
-        const monthNumber = parseInt(dateParts[1], 10);
-        console.log('Extracted month number:', monthNumber);
-        return monthNumber; // Month is the second part in DD/MM/YYYY
+    // Try DD/MM/YYYY format (standard flydubai format)
+    const ddmmyyyyRegex = /^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+\w+)?$/;
+    const ddmmyyyyMatch = cleanDateStr.match(ddmmyyyyRegex);
+
+    if (ddmmyyyyMatch) {
+        const monthNumber = parseInt(ddmmyyyyMatch[2], 10);
+        console.log('Extracted month number from DD/MM/YYYY format:', monthNumber);
+        return monthNumber;
     }
 
-    // If we couldn't parse the date in DD/MM/YYYY format, try other formats
-    // Try to handle dates like "01/12/2024 Sun" (with day of week)
-    const dateWithDayOfWeek = dateStr.split(' ');
-    if (dateWithDayOfWeek.length >= 2) {
-        const dateParts = dateWithDayOfWeek[0].split('/');
-        if (dateParts.length === 3) {
-            const monthNumber = parseInt(dateParts[1], 10);
-            console.log('Extracted month number from date with day of week:', monthNumber);
-            return monthNumber;
+    // Try MM/DD/YYYY format - we need to be smarter about distinguishing between DD/MM and MM/DD
+    // If we get here, we didn't match DD/MM/YYYY, so let's try to determine if it's MM/DD/YYYY
+    // by checking if the first number is a valid month (1-12) and the second number is a valid day (1-31)
+    const dateRegex = /^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+\w+)?$/;
+    const dateMatch = cleanDateStr.match(dateRegex);
+
+    if (dateMatch) {
+        const firstNumber = parseInt(dateMatch[1], 10);
+        const secondNumber = parseInt(dateMatch[2], 10);
+
+        // If the first number is a valid month (1-12) and the second number is > 12,
+        // it's likely MM/DD/YYYY format
+        if (firstNumber >= 1 && firstNumber <= 12 && secondNumber > 12 && secondNumber <= 31) {
+            console.log('Detected MM/DD/YYYY format based on values');
+            console.log('Extracted month number from MM/DD/YYYY format:', firstNumber);
+            return firstNumber;
+        }
+
+        // If we can't determine for sure, assume DD/MM/YYYY as that's more common internationally
+        if (secondNumber >= 1 && secondNumber <= 12) {
+            console.log('Assuming DD/MM/YYYY format as fallback');
+            console.log('Extracted month number from assumed DD/MM/YYYY format:', secondNumber);
+            return secondNumber;
         }
     }
 
+    // Try YYYY-MM-DD format
+    const yyyymmddRegex = /^(\d{4})-(\d{1,2})-(\d{1,2})(?:\s+\w+)?$/;
+    const yyyymmddMatch = cleanDateStr.match(yyyymmddRegex);
+
+    if (yyyymmddMatch) {
+        const monthNumber = parseInt(yyyymmddMatch[2], 10);
+        console.log('Extracted month number from YYYY-MM-DD format:', monthNumber);
+        return monthNumber;
+    }
+
+    // Try to extract date from a string that might contain a date
+    // This is a more aggressive approach for when the format is unknown
+    const anyDateRegex = /(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})/;
+    const anyDateMatch = cleanDateStr.match(anyDateRegex);
+
+    if (anyDateMatch) {
+        // Assume the second group is the month (most common in DD/MM/YYYY and YYYY-MM-DD)
+        // If the third group is a 4-digit year, then the second group is likely the month
+        // If the third group is a 2-digit year, we need to check the values to make a best guess
+
+        const firstNumber = parseInt(anyDateMatch[1], 10);
+        const secondNumber = parseInt(anyDateMatch[2], 10);
+        const thirdNumber = parseInt(anyDateMatch[3], 10);
+
+        // If the third number is a 4-digit year
+        if (thirdNumber > 1000) {
+            // Assume DD/MM/YYYY format
+            if (secondNumber >= 1 && secondNumber <= 12) {
+                console.log('Extracted month number from generic date format (assuming DD/MM/YYYY):', secondNumber);
+                return secondNumber;
+            }
+        }
+
+        // If the first number could be a month (1-12)
+        if (firstNumber >= 1 && firstNumber <= 12) {
+            console.log('Extracted month number from generic date format (assuming MM/DD/YYYY):', firstNumber);
+            return firstNumber;
+        }
+
+        // If the second number could be a month (1-12)
+        if (secondNumber >= 1 && secondNumber <= 12) {
+            console.log('Extracted month number from generic date format (assuming DD/MM/YYYY):', secondNumber);
+            return secondNumber;
+        }
+    }
+
+    // If we get here, we couldn't extract a month
     console.error('Could not extract month from date string:', dateStr);
-    return null;
+
+    // As a last resort, use the current month
+    const currentMonth = new Date().getMonth() + 1; // JavaScript months are 0-indexed
+    console.log('Using current month as fallback:', currentMonth);
+    return currentMonth;
 }
 
 // Get month name from month number (1-based)
