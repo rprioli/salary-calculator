@@ -1148,27 +1148,9 @@
                                     // Process as a regular CSV file
                                     console.log('Processing regular CSV format...');
 
-                                    // Parse the CSV data using Papa Parse first
-                                    Papa.parse(csvData, {
-                                        header: true,
-                                        skipEmptyLines: true,
-                                        complete: function(results) {
-                                            console.log('Regular CSV parsed successfully, rows:', results.data.length);
-
-                                            if (results.data && results.data.length > 0) {
-                                                // Process the data directly with processFlightData
-                                                // Skip the local processRosterData function since we already have parsed data
-                                                processFlightData(results.data);
-                                            } else {
-                                                console.error('No valid data found in regular CSV format');
-                                                window.showErrorNotification('No valid data found in the file.');
-                                            }
-                                        },
-                                        error: function(error) {
-                                            console.error('Error parsing regular CSV:', error);
-                                            window.showErrorNotification('Error parsing CSV file: ' + error.message);
-                                        }
-                                    });
+                                    // For regular CSV, we'll use the local processRosterData function
+                                    // which expects a string, so we pass the raw csvData string
+                                    processRosterData(csvData);
                                 }
                             } catch (err) {
                                 console.error('Error in FileReader onload handler:', err);
