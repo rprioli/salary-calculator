@@ -197,7 +197,6 @@
                         </div>
                         <h3 class="text-lg font-medium text-gray-700 mb-1">Upload Roster</h3>
                         <p class="text-sm text-gray-500 text-center">Import your CSV file</p>
-                        <a href="sample-roster.csv" download class="text-xs text-blue-600 hover:text-blue-800 mt-2 inline-block">Download Sample CSV</a>
                         <input id="csv-upload" type="file" accept=".csv" class="hidden">
                     </label>
 
@@ -289,20 +288,10 @@
             // Only display data from actual user uploads
         });
 
-        // Function to load sample data for testing
-        function loadSampleData() {
-            console.log('Loading sample data for testing...');
-            // Sample CSV data that matches our current_month_roster.csv
-            const sampleCsvData = `date,flight,from,to,hours,pay
-2024-04-01,FZ123,DXB,IKA,5.5,550
-2024-04-05,FZ456,DXB,KWI,3.2,320
-2024-04-10,FZ789,DXB,AMM,4.0,400
-2024-04-15,FZ234,DXB,MCT,2.5,250
-2024-04-20,FZ567,DXB,BAH,2.0,200
-2024-04-25,FZ890,DXB,DOH,3.0,300`;
-
-            // Process the sample data
-            processRosterData(sampleCsvData);
+        // Function placeholder for future testing needs
+        function loadTestData() {
+            console.log('Test data loading function - not implemented');
+            // This function is kept as a placeholder for future testing needs
         }
 
         function updateDashboardCards(currentMonthData, multiMonthData) {
