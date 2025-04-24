@@ -176,6 +176,20 @@ function processFlightDuty(date, duties, details, reportTime, actualTimes, debri
 
 // Main function to process the entire roster data
 function processRosterData(rosterData, selectedRole) {
+    console.log('processRosterData called with:', {
+        rosterDataType: typeof rosterData,
+        rosterDataLength: rosterData ? rosterData.length : 0,
+        selectedRole: selectedRole
+    });
+
+    // Log the first few rows of the roster data for debugging
+    if (rosterData && rosterData.length > 0) {
+        console.log('First 5 rows of roster data:', rosterData.slice(0, 5));
+    } else {
+        console.error('Roster data is empty or invalid');
+        return null;
+    }
+
     // Reset parsed data
     let newParsedFlights = [];
     let excludedFlightsCount = 0;
@@ -191,33 +205,51 @@ function processRosterData(rosterData, selectedRole) {
 
     // Find the start of the schedule section
     let scheduleStartIndex = 0;
+    console.log('Searching for Schedule Details section...');
     for (let i = 0; i < rosterData.length; i++) {
-        if (rosterData[i][0] === 'Schedule Details') {
+        if (rosterData[i] && rosterData[i][0] === 'Schedule Details') {
             scheduleStartIndex = i + 1; // Start from the next row (header)
+            console.log('Found Schedule Details at row', i, 'starting processing from row', scheduleStartIndex);
             break;
         }
     }
 
     // If Schedule Details not found, try to find the header row directly
     if (scheduleStartIndex === 0) {
+        console.log('Schedule Details not found, looking for Date/Duties/Details header...');
         for (let i = 0; i < rosterData.length; i++) {
-            if (rosterData[i][0] === 'Date' &&
+            if (rosterData[i] &&
+                rosterData[i][0] === 'Date' &&
                 rosterData[i][1] === 'Duties' &&
                 rosterData[i][2] === 'Details') {
                 scheduleStartIndex = i + 1; // Start from the next row after header
+                console.log('Found Date/Duties/Details header at row', i, 'starting processing from row', scheduleStartIndex);
                 break;
             }
         }
     }
 
+    // If still not found, log the issue
+    if (scheduleStartIndex === 0) {
+        console.error('Could not find Schedule Details or Date/Duties/Details header in the roster data');
+        console.log('First 10 rows for debugging:', rosterData.slice(0, 10));
+    }
+
     // Find the end of the schedule section
     let scheduleEndIndex = rosterData.length;
     for (let i = scheduleStartIndex; i < rosterData.length; i++) {
-        if (rosterData[i][0] === 'Total Hours and Statistics') {
+        if (rosterData[i] && rosterData[i][0] === 'Total Hours and Statistics') {
             scheduleEndIndex = i;
+            console.log('Found Total Hours and Statistics at row', i, 'ending processing at this row');
             break;
         }
     }
+
+    console.log('Schedule section identified:', {
+        startIndex: scheduleStartIndex,
+        endIndex: scheduleEndIndex,
+        numberOfRows: scheduleEndIndex - scheduleStartIndex
+    });
 
     // Extract the roster month and year
     let newRosterMonth = '';
@@ -270,14 +302,25 @@ function processRosterData(rosterData, selectedRole) {
     }
 
     // First pass: Process all flight entries, excluding flights not in the primary month
+    console.log('Starting to process flight entries...');
+    let processedRowCount = 0;
+    let validRowCount = 0;
+    let flightDutyCount = 0;
+
     for (let i = scheduleStartIndex; i < scheduleEndIndex; i++) {
         const row = rosterData[i];
+        processedRowCount++;
 
         // Skip header row if present
-        if (row[0] === 'Date') continue;
+        if (row[0] === 'Date') {
+            console.log('Skipping header row at index', i);
+            continue;
+        }
 
         // Check if this is a valid row with date and duties
         if (row[0] && row[1]) {
+            validRowCount++;
+
             // Process the row based on duty type
             const date = row[0] ? row[0].trim() : '';
             const duties = row[1] ? row[1].trim() : '';
@@ -286,34 +329,59 @@ function processRosterData(rosterData, selectedRole) {
             const actualTimes = row[4] ? row[4].trim() : '';
             const debriefTime = row[5] ? row[5].trim() : '';
 
+            console.log(`Processing row ${i}:`, { date, duties, details, reportTime, actualTimes, debriefTime });
+
             // Check if this flight belongs to the primary month
             const flightMonthNumber = getMonthNumberFromDate(date);
+            console.log('Date parsing:', { date, flightMonthNumber, primaryMonthNumber });
+
             if (flightMonthNumber !== primaryMonthNumber) {
                 // Skip this flight as it belongs to a different month
                 excludedFlightsCount++;
+                console.log(`Excluding flight at row ${i} - belongs to month ${flightMonthNumber}, not primary month ${primaryMonthNumber}`);
                 continue;
             }
 
             // Skip OFF days and REST days
-            if (duties === 'OFF' || duties === '*OFF' || duties === 'X') continue;
+            if (duties === 'OFF' || duties === '*OFF' || duties === 'X') {
+                console.log(`Skipping OFF/REST day at row ${i}`);
+                continue;
+            }
 
             // Handle different duty types
             if (duties === 'SBY') {
                 // Home standby - no pay for this
+                console.log(`Skipping home standby at row ${i}`);
                 continue;
             } else if (duties === 'ASBY') {
                 // Airport standby
+                console.log(`Processing airport standby at row ${i}`);
                 const result = processAirportStandby(date, actualTimes, newCalculationResults, newParsedFlights, selectedRole);
                 newCalculationResults = result.newCalculationResults;
                 newParsedFlights = result.newParsedFlights;
             } else if (duties.includes('FZ')) {
                 // Flight duty
+                console.log(`Processing flight duty at row ${i}: ${duties} - ${details}`);
+                flightDutyCount++;
                 const result = processFlightDuty(date, duties, details, reportTime, actualTimes, debriefTime, newCalculationResults, newParsedFlights, selectedRole);
                 newCalculationResults = result.newCalculationResults;
                 newParsedFlights = result.newParsedFlights;
+                console.log(`After processing flight duty, newParsedFlights length: ${newParsedFlights.length}`);
+            } else {
+                console.log(`Unknown duty type at row ${i}: ${duties}`);
             }
+        } else {
+            console.log(`Skipping invalid row at index ${i}:`, row);
         }
     }
+
+    console.log('Flight processing summary:', {
+        processedRowCount,
+        validRowCount,
+        flightDutyCount,
+        excludedFlightsCount,
+        parsedFlightsCount: newParsedFlights.length
+    });
 
     // Second pass: Process layovers by identifying pairs of flights
     // We'll look for flight pairs where:
@@ -376,6 +444,25 @@ function processRosterData(rosterData, selectedRole) {
         newCalculationResults.flightPay +
         newCalculationResults.perDiem +
         newCalculationResults.asbyPay;
+
+    // Add basic salary components to the calculation results
+    newCalculationResults.basicSalary = basicSalary;
+    newCalculationResults.housingAllowance = housingAllowance;
+    newCalculationResults.transportationAllowance = transportationAllowance;
+
+    console.log('Final calculation results:', newCalculationResults);
+    console.log('Parsed flights count:', newParsedFlights.length);
+
+    if (newParsedFlights.length === 0) {
+        console.warn('No flights were parsed from the roster data');
+
+        // Check if we have valid salary data even without flights
+        if (basicSalary > 0) {
+            console.log('Returning calculation results with fixed salary components only');
+        } else {
+            console.error('No valid salary data found');
+        }
+    }
 
     return {
         newParsedFlights,

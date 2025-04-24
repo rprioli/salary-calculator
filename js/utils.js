@@ -43,13 +43,36 @@ function calculateHoursBetween(startTime, endTime) {
 
 // Get the month number from a date string (format: DD/MM/YYYY)
 function getMonthNumberFromDate(dateStr) {
-    if (!dateStr || typeof dateStr !== 'string') return null;
+    console.log('getMonthNumberFromDate called with:', dateStr);
+
+    if (!dateStr || typeof dateStr !== 'string') {
+        console.error('Invalid date string:', dateStr);
+        return null;
+    }
 
     // Try to extract the month from the date string
     const dateParts = dateStr.split('/');
+    console.log('Date parts:', dateParts);
+
     if (dateParts.length === 3) {
-        return parseInt(dateParts[1], 10); // Month is the second part in DD/MM/YYYY
+        const monthNumber = parseInt(dateParts[1], 10);
+        console.log('Extracted month number:', monthNumber);
+        return monthNumber; // Month is the second part in DD/MM/YYYY
     }
+
+    // If we couldn't parse the date in DD/MM/YYYY format, try other formats
+    // Try to handle dates like "01/12/2024 Sun" (with day of week)
+    const dateWithDayOfWeek = dateStr.split(' ');
+    if (dateWithDayOfWeek.length >= 2) {
+        const dateParts = dateWithDayOfWeek[0].split('/');
+        if (dateParts.length === 3) {
+            const monthNumber = parseInt(dateParts[1], 10);
+            console.log('Extracted month number from date with day of week:', monthNumber);
+            return monthNumber;
+        }
+    }
+
+    console.error('Could not extract month from date string:', dateStr);
     return null;
 }
 
