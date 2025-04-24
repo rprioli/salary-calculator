@@ -521,7 +521,19 @@
 
         function formatDate(dateString) {
             try {
-                const date = new Date(dateString);
+                let date;
+
+                // Check if the date is in the format DD/MM/YYYY Day (e.g., 01/11/2024 Fri)
+                if (typeof dateString === 'string' && dateString.match(/^\d{2}\/\d{2}\/\d{4}\s+[A-Za-z]{3}$/)) {
+                    // Extract just the date part (remove the day of week)
+                    const datePart = dateString.split(' ')[0];
+                    const [day, month, year] = datePart.split('/');
+                    // Create date in YYYY-MM-DD format
+                    date = new Date(`${year}-${month}-${day}`);
+                } else {
+                    // Try standard parsing
+                    date = new Date(dateString);
+                }
 
                 // Check if the date is valid
                 if (isNaN(date.getTime())) {
