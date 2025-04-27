@@ -81,6 +81,43 @@ function calculatePerDiem(
   return newCalculationResults;
 }
 
+// Helper function to detect turnaround flights based on sector pattern
+function detectTurnaroundFromSector(sector) {
+  if (!sector) return false;
+
+  // Clean the sector string
+  const cleanSector = sector.replace(/[��?�]/g, "").trim();
+
+  // Check for patterns like "DXB - IKA IKA - DXB" or multiple dashes
+  if (cleanSector.split(" - ").length > 2) {
+    // Check if first and last airport codes are the same (e.g., DXB - IKA - DXB)
+    const airports = cleanSector.split(" - ");
+    if (airports.length >= 3 && airports[0] === airports[airports.length - 1]) {
+      return true;
+    }
+  }
+
+  // Check for patterns like "DXB - IKA IKA - DXB" where there might be spaces instead of dashes
+  if (
+    cleanSector.includes(" - ") &&
+    cleanSector.includes(" ") &&
+    cleanSector.split(" ").length > 3
+  ) {
+    // Extract airport codes
+    const parts = cleanSector.split(" - ");
+    if (parts.length >= 2) {
+      const firstAirport = parts[0].trim();
+      const lastPart = parts[parts.length - 1].trim();
+      // Check if the last part contains the first airport code
+      if (lastPart.includes(firstAirport)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 // Process flight duties
 function processFlightDuty(
   date,
@@ -107,16 +144,7 @@ function processFlightDuty(
 
   // Check if this is a turnaround with a complex sector string
   if (!isTurnaround && flightNumbers.length === 1 && sectors.length === 1) {
-    const sectorStr = sectors[0];
-    // Check for patterns like "DXB - IKA IKA - DXB" or multiple dashes
-    if (
-      sectorStr.split(" - ").length > 2 ||
-      (sectorStr.includes(" - ") &&
-        sectorStr.includes(" ") &&
-        sectorStr.split(" ").length > 3)
-    ) {
-      isTurnaround = true;
-    }
+    isTurnaround = detectTurnaroundFromSector(sectors[0]);
   }
 
   // For single flight sectors
@@ -130,7 +158,17 @@ function processFlightDuty(
         // Calculate flight hours (minus 30 minutes for debriefing)
         let hours = calculateHoursBetween(startTime, endTime) - 0.5;
 
-        // Add flight to parsed list
+        // Check if this is a layover flight based on sector or flight number
+        const isLayover =
+          duties.toString().toUpperCase().includes("LAY") ||
+          duties.toString().toUpperCase().includes("LAYOVER");
+
+        // Check if this is an airport standby
+        const isAsby =
+          duties.toString().toUpperCase().includes("ASBY") ||
+          duties.toString().toUpperCase().includes("STANDBY");
+
+        // Add flight to parsed list with improved type detection
         newParsedFlights.push({
           date: date,
           flight: duties,
@@ -141,6 +179,8 @@ function processFlightDuty(
           pay: hours * SALARY_DATA[selectedRole].flightPayRate,
           isOutbound: true, // Mark as potential outbound flight for layover detection
           isTurnaround: isTurnaround, // Mark as turnaround if identified as such
+          isLayover: isLayover, // Mark as layover if identified as such
+          isAsby: isAsby, // Mark as airport standby if identified as such
         });
 
         // Update total flight hours
@@ -151,6 +191,16 @@ function processFlightDuty(
           hours * SALARY_DATA[selectedRole].flightPayRate;
       }
     } else {
+      // Check if this is a layover flight based on sector or flight number
+      const isLayover =
+        duties.toString().toUpperCase().includes("LAY") ||
+        duties.toString().toUpperCase().includes("LAYOVER");
+
+      // Check if this is an airport standby
+      const isAsby =
+        duties.toString().toUpperCase().includes("ASBY") ||
+        duties.toString().toUpperCase().includes("STANDBY");
+
       // If reporting or debriefing time is missing, still add the flight but with 0 hours
       newParsedFlights.push({
         date: date,
@@ -162,6 +212,8 @@ function processFlightDuty(
         pay: 0,
         isOutbound: true,
         isTurnaround: isTurnaround,
+        isLayover: isLayover, // Mark as layover if identified as such
+        isAsby: isAsby, // Mark as airport standby if identified as such
       });
     }
   } else {
@@ -195,7 +247,17 @@ function processFlightDuty(
             hours -= 0.5;
           }
 
-          // Add flight to parsed list
+          // Check if this is a layover flight based on sector or flight number
+          const isLayover =
+            flightNumbers[i].toString().toUpperCase().includes("LAY") ||
+            flightNumbers[i].toString().toUpperCase().includes("LAYOVER");
+
+          // Check if this is an airport standby
+          const isAsby =
+            flightNumbers[i].toString().toUpperCase().includes("ASBY") ||
+            flightNumbers[i].toString().toUpperCase().includes("STANDBY");
+
+          // Add flight to parsed list with improved type detection
           newParsedFlights.push({
             date: date,
             flight: flightNumbers[i],
@@ -205,6 +267,8 @@ function processFlightDuty(
             hours: hours,
             pay: hours * SALARY_DATA[selectedRole].flightPayRate,
             isTurnaround: true,
+            isLayover: isLayover, // Mark as layover if identified as such
+            isAsby: isAsby, // Mark as airport standby if identified as such
           });
 
           // Update total flight hours
@@ -215,6 +279,16 @@ function processFlightDuty(
             hours * SALARY_DATA[selectedRole].flightPayRate;
         }
       } else {
+        // Check if this is a layover flight based on sector or flight number
+        const isLayover =
+          flightNumbers[i].toString().toUpperCase().includes("LAY") ||
+          flightNumbers[i].toString().toUpperCase().includes("LAYOVER");
+
+        // Check if this is an airport standby
+        const isAsby =
+          flightNumbers[i].toString().toUpperCase().includes("ASBY") ||
+          flightNumbers[i].toString().toUpperCase().includes("STANDBY");
+
         // If reporting or debriefing time is missing, still add the flight but with 0 hours
         newParsedFlights.push({
           date: date,
@@ -225,6 +299,8 @@ function processFlightDuty(
           hours: 0,
           pay: 0,
           isTurnaround: true,
+          isLayover: isLayover, // Mark as layover if identified as such
+          isAsby: isAsby, // Mark as airport standby if identified as such
         });
       }
     }

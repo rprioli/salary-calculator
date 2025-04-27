@@ -367,13 +367,14 @@
       function loadSampleData() {
         console.log("Loading sample data for testing...");
         // Sample CSV data that matches our current_month_roster.csv
-        const sampleCsvData = `date,flight,from,to,hours,pay
-2024-04-01,FZ123,DXB,IKA,5.5,550
-2024-04-05,FZ456,DXB,KWI,3.2,320
-2024-04-10,FZ789,DXB,AMM,4.0,400
-2024-04-15,FZ234,DXB,MCT,2.5,250
-2024-04-20,FZ567,DXB,BAH,2.0,200
-2024-04-25,FZ890,DXB,DOH,3.0,300`;
+        const sampleCsvData = `date,flight,from,to,sector,hours,pay,reporting,debriefing
+2024-04-01,FZ123,DXB,IKA,DXB - IKA,5.5,550,08:00,14:30
+2024-04-05,FZ456,DXB,KWI,DXB - KWI,3.2,320,10:00,14:12
+2024-04-10,FZ789 FZ790,DXB,DXB,DXB - AMM - DXB,4.0,400,07:30,12:30
+2024-04-15,FZ234,DXB,MCT,DXB - MCT,2.5,250,09:00,12:30
+2024-04-20,LAYOVER FZ567,DXB,BAH,DXB - BAH,2.0,200,14:00,17:00
+2024-04-21,LAYOVER FZ568,BAH,DXB,BAH - DXB,2.0,200,10:00,13:00
+2024-04-25,ASBY,DXB,DXB,Airport Standby,3.0,150,15:00,18:00`;
 
         // Process the sample data
         processRosterData(sampleCsvData);
@@ -580,14 +581,96 @@
 
             // For the sector/route, check if we have a sector field or need to construct it
             let route = "";
+
+            // First, check if this is a turnaround flight based on the pattern
+            // If not already set, detect turnaround flights by checking if departure equals destination
+            // or if the sector has a pattern like "DXB - FRU FRU - DXB"
+            if (
+              !flight.isTurnaround &&
+              flight.departure &&
+              flight.destination
+            ) {
+              if (flight.departure === flight.destination) {
+                flight.isTurnaround = true;
+              }
+            }
+
             if (flight.sector) {
-              // Use the sector field directly if available
-              route = flight.sector;
+              // Check if this is a turnaround flight with a complex sector string
+              if (flight.sector.includes(" - ")) {
+                // Extract unique airport codes from the sector string
+                let airports = [];
+
+                // Split by " - " to get all segments
+                const segments = flight.sector.split(" - ");
+
+                // Process each segment to extract airport codes
+                segments.forEach((segment) => {
+                  // Clean up any extra text after the airport code
+                  const airportCode = segment.trim().split(" ")[0];
+
+                  // Only add unique airport codes
+                  if (airportCode && !airports.includes(airportCode)) {
+                    airports.push(airportCode);
+                  }
+                });
+
+                // If we have a complex pattern like "DXB - FRU FRU - DXB", ensure we have the return to origin
+                if (
+                  airports.length >= 2 &&
+                  airports[0] !== airports[airports.length - 1] &&
+                  flight.isTurnaround
+                ) {
+                  airports.push(airports[0]); // Add the origin airport at the end for the return leg
+                }
+
+                // If first and last airports are the same, mark as turnaround
+                if (
+                  airports.length >= 3 &&
+                  airports[0] === airports[airports.length - 1]
+                ) {
+                  flight.isTurnaround = true;
+                }
+
+                // Create a simplified route string
+                if (airports.length >= 2) {
+                  route = airports.join(" - ");
+                } else {
+                  route = flight.sector; // Fallback to original sector if parsing fails
+                }
+              } else {
+                // Use the sector field directly if not a complex sector
+                route = flight.sector;
+              }
             } else {
               // Otherwise construct from departure and destination
               route = `${flight.departure || "DXB"} - ${
                 flight.destination || "Unknown"
               }`;
+
+              // If this is a turnaround flight, add the return leg
+              if (flight.isTurnaround) {
+                route = `${flight.departure || "DXB"} - ${
+                  flight.destination || "Unknown"
+                } - ${flight.departure || "DXB"}`;
+              }
+            }
+
+            // Check for layover flights based on flight number if not already set
+            if (!flight.isLayover && flightNumber) {
+              if (flightNumber.toString().toUpperCase().includes("LAY")) {
+                flight.isLayover = true;
+              }
+            }
+
+            // Check for airport standby based on flight number if not already set
+            if (!flight.isAsby && flightNumber) {
+              if (
+                flightNumber.toString().toUpperCase().includes("ASBY") ||
+                flightNumber.toString().toUpperCase().includes("STANDBY")
+              ) {
+                flight.isAsby = true;
+              }
             }
 
             // Log each flight as we render it
@@ -600,11 +683,96 @@
               pay: flightPay,
             });
 
+            // Define different arrow SVGs for different flight types
+            const standardArrowSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mx-1 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" /></svg>`;
+
+            const layoverArrowSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-1 inline-block" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>`;
+
+            const turnaroundArrowSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-1 inline-block" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" /></svg>`;
+
+            // Prepare flight type display
+            let flightTypeDisplay = "";
+            let routeDisplay = "";
+
+            // Determine flight type and create appropriate display
+            if (flight.isTurnaround) {
+              // Turnaround flight - teal with sync icon
+              flightTypeDisplay = `<span class="ml-2 px-2 py-1 bg-teal-100 text-teal-800 rounded-full text-xs flex items-center" style="display: inline-flex;"><i class="fas fa-sync-alt mr-1"></i>Turnaround</span>`;
+
+              // For turnaround flights, check if it's a simple origin-destination-origin pattern
+              if (
+                route.split(" - ").length === 3 &&
+                route.split(" - ")[0] === route.split(" - ")[2]
+              ) {
+                const airports = route.split(" - ");
+                routeDisplay = `
+                        <span class="font-medium">${airports[0]}</span>
+                        <span class="text-teal-500">${turnaroundArrowSvg}</span>
+                        <span class="font-medium">${airports[1]}</span>
+                    `;
+              } else {
+                // For more complex routes, use the standard display
+                routeDisplay = route
+                  .split(" - ")
+                  .map(
+                    (airport, i, arr) =>
+                      `<span class="font-medium">${airport}</span>` +
+                      (i < arr.length - 1
+                        ? `<span class="text-teal-500">${standardArrowSvg}</span>`
+                        : "")
+                  )
+                  .join("");
+              }
+            } else if (flight.isLayover) {
+              // Layover flight - purple with bed icon
+              flightTypeDisplay = `<span class="ml-2 px-2 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs flex items-center" style="display: inline-flex;"><i class="fas fa-bed mr-1"></i>Layover</span>`;
+
+              // For layover flights, use the one-way arrow
+              const airports = route.split(" - ");
+              if (airports.length === 2) {
+                routeDisplay = `
+                        <span class="font-medium">${airports[0]}</span>
+                        <span class="text-indigo-500">${layoverArrowSvg}</span>
+                        <span class="font-medium">${airports[1]}</span>
+                    `;
+              } else {
+                routeDisplay = route;
+              }
+            } else if (flight.isAsby) {
+              // Airport standby - yellow with clock icon
+              flightTypeDisplay = `<span class="ml-2 px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs flex items-center" style="display: inline-flex;"><i class="fas fa-clock mr-1"></i>ASBY</span>`;
+              routeDisplay = route;
+            } else {
+              // Regular flight - gray with plane icon
+              flightTypeDisplay = `<span class="ml-2 px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs flex items-center" style="display: inline-flex;"><i class="fas fa-plane mr-1"></i>Flight</span>`;
+
+              // For regular flights, use the standard arrow
+              const airports = route.split(" - ");
+              if (airports.length === 2) {
+                routeDisplay = `
+                        <span class="font-medium">${airports[0]}</span>
+                        <span class="text-gray-500">${standardArrowSvg}</span>
+                        <span class="font-medium">${airports[1]}</span>
+                    `;
+              } else {
+                routeDisplay = route;
+              }
+            }
+
             return `
                 <tr>
                     <td>${formatDate(flight.date)}</td>
-                    <td>${flightNumber}</td>
-                    <td>${route}</td>
+                    <td>
+                        <div class="flex items-center">
+                            <span>${flightNumber}</span>
+                            ${flightTypeDisplay}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="flex items-center">
+                            ${routeDisplay}
+                        </div>
+                    </td>
                     <td>${
                       flight.reporting && flight.reporting !== 0
                         ? flight.reporting
@@ -807,6 +975,51 @@
             flightHours: hoursField ? parseFloat(row[hoursField]) : 0,
             flightPay: payField ? parseFloat(row[payField]) : 0,
           };
+
+          // Set flight type flags
+          // Construct sector string if not already present
+          if (!flight.sector) {
+            flight.sector = `${flight.departure} - ${flight.destination}`;
+          }
+
+          // Check if this is a layover flight (based on flight number pattern or other indicators)
+          flight.isLayover = false;
+          if (flightNumberField && row[flightNumberField]) {
+            // Check if flight number contains indicators of layover
+            const flightNum = row[flightNumberField].toString().toUpperCase();
+            if (flightNum.includes("LAYOVER") || flightNum.includes("LAY")) {
+              flight.isLayover = true;
+            }
+          }
+
+          // Check if this is a turnaround flight (based on sector pattern)
+          flight.isTurnaround = false;
+          if (flight.sector && flight.sector.includes(" - ")) {
+            const segments = flight.sector.split(" - ");
+            // If there are 3 or more segments and first equals last, it's likely a turnaround
+            if (
+              segments.length >= 3 &&
+              segments[0] === segments[segments.length - 1]
+            ) {
+              flight.isTurnaround = true;
+            }
+            // Or if there are exactly 2 segments but the second contains the first airport code
+            else if (
+              segments.length === 2 &&
+              segments[1].includes(segments[0])
+            ) {
+              flight.isTurnaround = true;
+            }
+          }
+
+          // Check if this is an airport standby
+          flight.isAsby = false;
+          if (flightNumberField && row[flightNumberField]) {
+            const flightNum = row[flightNumberField].toString().toUpperCase();
+            if (flightNum.includes("ASBY") || flightNum.includes("STANDBY")) {
+              flight.isAsby = true;
+            }
+          }
 
           // Validate the flight object
           if (isNaN(flight.flightHours)) flight.flightHours = 0;

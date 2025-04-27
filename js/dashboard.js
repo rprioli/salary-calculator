@@ -104,11 +104,60 @@ function updateRecentFlightsTable(flights) {
     .map((flight) => {
       const hours = flight.flightHours || flight.hours || 0;
       const pay = flight.flightPay || flight.pay || 0;
+
+      // Determine the route display
+      let routeDisplay = "";
+
+      // If we have a sector field and it's a turnaround flight, use the cleaned sector
+      if (flight.sector && flight.isTurnaround) {
+        // Extract unique airport codes from the sector string
+        let airports = [];
+
+        // Split by " - " to get all segments
+        const segments = flight.sector.split(" - ");
+
+        // Process each segment to extract airport codes
+        segments.forEach((segment) => {
+          // Clean up any extra text after the airport code
+          const airportCode = segment.trim().split(" ")[0];
+
+          // Only add unique airport codes
+          if (airportCode && !airports.includes(airportCode)) {
+            airports.push(airportCode);
+          }
+        });
+
+        // If we have a complex pattern like "DXB - FRU FRU - DXB", ensure we have the return to origin
+        if (
+          airports.length >= 2 &&
+          airports[0] !== airports[airports.length - 1]
+        ) {
+          airports.push(airports[0]); // Add the origin airport at the end for the return leg
+        }
+
+        // Create a simplified route string
+        if (airports.length >= 2) {
+          routeDisplay = airports.join(" - ");
+        } else {
+          routeDisplay = flight.sector; // Fallback to original sector
+        }
+      }
+      // If we have a sector field but it's not a turnaround, use it directly
+      else if (flight.sector) {
+        routeDisplay = flight.sector;
+      }
+      // Otherwise construct from departure and destination
+      else {
+        routeDisplay = `${flight.departure || "DXB"} - ${
+          flight.destination || "Unknown"
+        }`;
+      }
+
       return `
         <tr>
             <td>${formatDate(flight.date)}</td>
             <td>${flight.flightNumber || flight.flight}</td>
-            <td>${flight.departure} - ${flight.destination}</td>
+            <td>${routeDisplay}</td>
             <td>${formatHoursMinutes(hours)}</td>
             <td>${Math.round(pay)} AED</td>
         </tr>
