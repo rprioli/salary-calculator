@@ -337,27 +337,6 @@
         const multiMonthData =
           JSON.parse(localStorage.getItem("multiMonthData")) || {};
 
-        // Get current month data
-        const currentDate = new Date();
-        const currentMonthKey = `${
-          currentDate.getMonth() + 1
-        }-${currentDate.getFullYear()}`;
-
-        // Set the selected month to the first available month or leave empty if no data
-        const availableMonths = Object.keys(multiMonthData);
-        if (availableMonths.length > 0) {
-          // If there's data for the current month, use it
-          if (multiMonthData[currentMonthKey]) {
-            selectedMonthKey = currentMonthKey;
-          } else {
-            // Otherwise, use the most recent month (assuming keys are sorted)
-            selectedMonthKey = availableMonths[0];
-          }
-        } else {
-          // If no months available, don't select any month
-          selectedMonthKey = "";
-        }
-
         /**
          * Cleans up any empty month entries from localStorage
          * This helps ensure we don't have pre-selected months with no data
@@ -380,6 +359,27 @@
             localStorage.setItem("multiMonthData", JSON.stringify(data));
             console.log("Cleaned up empty month entries from localStorage");
           }
+        }
+
+        // Get current month data
+        const currentDate = new Date();
+        const currentMonthKey = `${
+          currentDate.getMonth() + 1
+        }-${currentDate.getFullYear()}`;
+
+        // Set the selected month to the first available month or leave empty if no data
+        const availableMonths = Object.keys(multiMonthData);
+        if (availableMonths.length > 0) {
+          // If there's data for the current month, use it
+          if (multiMonthData[currentMonthKey]) {
+            selectedMonthKey = currentMonthKey;
+          } else {
+            // Otherwise, use the most recent month (assuming keys are sorted)
+            selectedMonthKey = availableMonths[0];
+          }
+        } else {
+          // If no months available, don't select any month
+          selectedMonthKey = "";
         }
 
         // Render the month selector
