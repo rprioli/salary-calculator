@@ -23,28 +23,34 @@ function renderMonthSelector(selectedMonthKey, containerId, onMonthSelected) {
 
   // If no months, show only the "Upload Roster" button
   if (monthKeys.length === 0) {
-    // Create a container for the message and button
-    const contentContainer = document.createElement("div");
-    contentContainer.className = "month-selector-container";
+    // Create the button container
+    const buttonContainer = document.createElement("div");
+    buttonContainer.className = "month-selector-buttons";
 
-    // Add the message
+    // Create the "Upload Roster" button
+    const addMonthButton = document.createElement("button");
+    addMonthButton.className = "upload-roster-button";
+    addMonthButton.innerHTML =
+      '<i class="fas fa-upload mr-2"></i>Upload Roster';
+
+    // Add click event listener
+    addMonthButton.addEventListener("click", () => {
+      showMonthSelectionModal(onMonthSelected);
+    });
+
+    // Add the button to the container
+    buttonContainer.appendChild(addMonthButton);
+
+    // Create the message
     const noDataMessage = document.createElement("div");
     noDataMessage.className = "month-selector-message";
     noDataMessage.innerHTML =
       '<i class="fas fa-info-circle mr-2"></i>No roster data available. Please upload a roster.';
 
-    // Create a button container
-    const buttonContainer = document.createElement("div");
-    buttonContainer.className = "month-selector-buttons";
-
-    // Add "Upload Roster" button
-    const addMonthButton = createAddMonthButton(onMonthSelected);
-
-    // Append elements in the right order
-    buttonContainer.appendChild(addMonthButton);
-    contentContainer.appendChild(buttonContainer);
-    contentContainer.appendChild(noDataMessage);
-    container.appendChild(contentContainer);
+    // Clear existing content and add the new elements
+    container.innerHTML = "";
+    container.appendChild(buttonContainer);
+    container.appendChild(noDataMessage);
 
     // Clear the selected month key since there's no data
     if (onMonthSelected) {
