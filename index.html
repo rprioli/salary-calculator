@@ -330,6 +330,9 @@
       let selectedMonthKey = "";
 
       document.addEventListener("DOMContentLoaded", function () {
+        // Clear any empty month entries from localStorage
+        cleanupEmptyMonths();
+
         // Load multi-month data
         const multiMonthData =
           JSON.parse(localStorage.getItem("multiMonthData")) || {};
@@ -353,6 +356,30 @@
         } else {
           // If no months available, don't select any month
           selectedMonthKey = "";
+        }
+
+        /**
+         * Cleans up any empty month entries from localStorage
+         * This helps ensure we don't have pre-selected months with no data
+         */
+        function cleanupEmptyMonths() {
+          const data = JSON.parse(localStorage.getItem("multiMonthData")) || {};
+          let hasChanges = false;
+
+          // Check each month entry
+          Object.keys(data).forEach((key) => {
+            // If the month has no flights, remove it
+            if (!data[key].flights || data[key].flights.length === 0) {
+              delete data[key];
+              hasChanges = true;
+            }
+          });
+
+          // Save changes if any were made
+          if (hasChanges) {
+            localStorage.setItem("multiMonthData", JSON.stringify(data));
+            console.log("Cleaned up empty month entries from localStorage");
+          }
         }
 
         // Render the month selector
