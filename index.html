@@ -340,7 +340,7 @@
           currentDate.getMonth() + 1
         }-${currentDate.getFullYear()}`;
 
-        // Set the selected month to the current month or the first available month
+        // Set the selected month to the first available month or leave empty if no data
         const availableMonths = Object.keys(multiMonthData);
         if (availableMonths.length > 0) {
           // If there's data for the current month, use it
@@ -351,22 +351,8 @@
             selectedMonthKey = availableMonths[0];
           }
         } else {
-          // If no months available, use the current month
-          selectedMonthKey = currentMonthKey;
-
-          // Initialize the current month data structure if it doesn't exist
-          if (!multiMonthData[selectedMonthKey]) {
-            multiMonthData[selectedMonthKey] = {
-              month: getMonthName(currentDate.getMonth() + 1),
-              year: currentDate.getFullYear(),
-              flights: [],
-              calculationResults: {},
-            };
-            localStorage.setItem(
-              "multiMonthData",
-              JSON.stringify(multiMonthData)
-            );
-          }
+          // If no months available, don't select any month
+          selectedMonthKey = "";
         }
 
         // Render the month selector
