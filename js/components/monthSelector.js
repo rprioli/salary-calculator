@@ -41,16 +41,9 @@ function renderMonthSelector(selectedMonthKey, containerId, onMonthSelected) {
     // Add the button to the container
     buttonContainer.appendChild(addMonthButton);
 
-    // Create the message
-    const noDataMessage = document.createElement("div");
-    noDataMessage.className = "month-selector-message";
-    noDataMessage.innerHTML =
-      '<i class="fas fa-info-circle mr-2"></i>No roster data available. Please upload a roster.';
-
-    // Clear existing content and add the new elements
+    // Clear existing content and add the button container
     container.innerHTML = "";
     container.appendChild(buttonContainer);
-    container.appendChild(noDataMessage);
 
     // Clear the selected month key since there's no data
     if (onMonthSelected) {
