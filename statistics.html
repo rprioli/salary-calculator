@@ -278,72 +278,7 @@
           </div>
         </div>
 
-        <!-- Month Selector -->
-        <div class="mb-6">
-          <div
-            id="month-selector-container"
-            class="p-4 bg-white rounded-lg shadow-md border border-gray-200"
-          >
-            <!-- Month selector will be populated by JavaScript -->
-          </div>
-        </div>
-
-        <!-- Monthly Flight Details -->
-        <div class="table-card mb-6">
-          <div class="table-card-header">
-            <div class="table-card-title">June 2023 Flights</div>
-          </div>
-          <div class="table-container">
-            <table class="dashboard-table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Flight</th>
-                  <th>Route</th>
-                  <th>Hours</th>
-                  <th>Pay</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>21 Jun</td>
-                  <td>FZ123</td>
-                  <td>DXB - IKA</td>
-                  <td>5.5h</td>
-                  <td>550 AED</td>
-                </tr>
-                <tr>
-                  <td>19 Jun</td>
-                  <td>FZ456</td>
-                  <td>DXB - KHI</td>
-                  <td>4.0h</td>
-                  <td>400 AED</td>
-                </tr>
-                <tr>
-                  <td>15 Jun</td>
-                  <td>FZ789</td>
-                  <td>DXB - AMM</td>
-                  <td>3.5h</td>
-                  <td>350 AED</td>
-                </tr>
-                <tr>
-                  <td>10 Jun</td>
-                  <td>FZ234</td>
-                  <td>DXB - DOH</td>
-                  <td>2.5h</td>
-                  <td>250 AED</td>
-                </tr>
-                <tr>
-                  <td>05 Jun</td>
-                  <td>FZ567</td>
-                  <td>DXB - MCT</td>
-                  <td>2.0h</td>
-                  <td>200 AED</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <!-- No month selector or flight details table as they are redundant -->
 
         <!-- Footer -->
         <div
@@ -390,11 +325,7 @@
     <script src="js/components/manualFlightEntry.js"></script>
     <script src="js/multiMonthData.js"></script>
     <script src="js/components/multiMonthVisualizations.js"></script>
-    <script src="js/components/monthSelector.js"></script>
     <script>
-      // Global variable to track the currently selected month
-      let selectedMonthKey = "";
-
       document.addEventListener("DOMContentLoaded", function () {
         // Set user email
         const userEmail = sessionStorage.getItem("userEmail");
@@ -424,151 +355,62 @@
         const multiMonthData =
           JSON.parse(localStorage.getItem("multiMonthData")) || {};
 
-        // Get current month data
-        const currentDate = new Date();
-        const currentMonthKey = `${
-          currentDate.getMonth() + 1
-        }-${currentDate.getFullYear()}`;
-
-        // Set the selected month to the current month or the first available month
-        const availableMonths = Object.keys(multiMonthData);
-        if (availableMonths.length > 0) {
-          // If there's data for the current month, use it
-          if (multiMonthData[currentMonthKey]) {
-            selectedMonthKey = currentMonthKey;
-          } else {
-            // Otherwise, use the most recent month (assuming keys are sorted)
-            selectedMonthKey = availableMonths[0];
-          }
-        } else {
-          // If no months available, use the current month
-          selectedMonthKey = currentMonthKey;
-        }
-
-        // Render the month selector
-        window.monthSelector.renderMonthSelector(
-          selectedMonthKey,
-          "month-selector-container",
-          onMonthSelected
-        );
-
-        // Update statistics with the selected month's data
-        updateStatisticsWithSelectedMonth();
+        // Update statistics with all available data
+        updateStatistics(multiMonthData);
       });
 
       /**
-       * Callback function when a month is selected
-       * @param {string} monthKey - The selected month key
+       * Updates the statistics page with data from all months
+       * @param {Object} multiMonthData - The multi-month data object
        */
-      function onMonthSelected(monthKey) {
-        console.log("Month selected:", monthKey);
-        selectedMonthKey = monthKey;
+      function updateStatistics(multiMonthData) {
+        // Process all months' data to generate statistics
+        const months = Object.keys(multiMonthData);
 
-        // Update the month selector
-        window.monthSelector.renderMonthSelector(
-          selectedMonthKey,
-          "month-selector-container",
-          onMonthSelected
-        );
-
-        // Update the statistics with the selected month's data
-        updateStatisticsWithSelectedMonth();
-      }
-
-      /**
-       * Updates the statistics page with the selected month's data
-       */
-      function updateStatisticsWithSelectedMonth() {
-        // Load multi-month data
-        const multiMonthData =
-          JSON.parse(localStorage.getItem("multiMonthData")) || {};
-
-        // Get the selected month's data
-        const selectedMonthData = multiMonthData[selectedMonthKey] || {
-          calculationResults: {},
-          flights: [],
-        };
-
-        // Extract month and year from the key
-        const [month, year] = selectedMonthKey.split("-");
-        const monthName =
-          selectedMonthData.month || getMonthName(parseInt(month));
-
-        // Update the monthly flight details table title
-        const flightDetailsTitle = document.querySelector(
-          ".table-card .table-card-title"
-        );
-        if (flightDetailsTitle) {
-          flightDetailsTitle.textContent = `${monthName} ${year} Flights`;
-        }
-
-        // Update the monthly flight details table
-        updateMonthlyFlightsTable(selectedMonthData.flights || []);
-
-        // Update other statistics and charts
-        // This would be implemented based on the actual data structure and requirements
-        // For now, we'll just log the data
-        console.log("Updating statistics with data:", selectedMonthData);
-      }
-
-      /**
-       * Updates the monthly flights table with the selected month's flights
-       * @param {Array} flights - The flights to display
-       */
-      function updateMonthlyFlightsTable(flights) {
-        const tableBody = document.querySelector(
-          ".table-card .dashboard-table tbody"
-        );
-        if (!tableBody) return;
-
-        if (!flights || flights.length === 0) {
-          tableBody.innerHTML = `
-            <tr>
-              <td colspan="5" class="text-center py-4 text-gray-500">No flights data available for this month.</td>
-            </tr>
-          `;
+        if (months.length === 0) {
+          console.log("No data available for statistics");
           return;
         }
 
-        // Sort flights by date
-        const sortedFlights = [...flights].sort((a, b) => {
-          return new Date(a.date) - new Date(b.date);
+        console.log(`Processing statistics for ${months.length} months`);
+
+        // Here you would implement the code to update the charts and statistics
+        // based on the data from all months
+        // For now, we'll just log the data
+        console.log("Updating statistics with data:", multiMonthData);
+
+        // Example: Calculate year-to-date earnings
+        let ytdEarnings = 0;
+        let totalFlightHours = 0;
+        let totalFlights = 0;
+
+        // Process each month's data
+        months.forEach((monthKey) => {
+          const monthData = multiMonthData[monthKey];
+          if (monthData && monthData.calculationResults) {
+            // Add to YTD earnings
+            if (monthData.calculationResults.totalSalary) {
+              ytdEarnings += monthData.calculationResults.totalSalary;
+            }
+
+            // Add to total flight hours
+            if (monthData.calculationResults.totalFlightHours) {
+              totalFlightHours += monthData.calculationResults.totalFlightHours;
+            }
+
+            // Add to total flights
+            if (monthData.flights) {
+              totalFlights += monthData.flights.length;
+            }
+          }
         });
 
-        // Generate table rows
-        tableBody.innerHTML = sortedFlights
-          .map((flight) => {
-            // Format the date
-            const date = new Date(flight.date);
-            const formattedDate = `${date.getDate()} ${getMonthShortName(
-              date.getMonth() + 1
-            )}`;
+        console.log("Year-to-date earnings:", ytdEarnings);
+        console.log("Total flight hours:", totalFlightHours);
+        console.log("Total flights:", totalFlights);
 
-            // Get flight number
-            const flightNumber = flight.flightNumber || flight.flight || "N/A";
-
-            // Get route
-            const route =
-              flight.sector ||
-              `${flight.departure || "N/A"} - ${flight.destination || "N/A"}`;
-
-            // Get hours
-            const hours = flight.flightHours || flight.hours || 0;
-
-            // Get pay
-            const pay = flight.flightPay || flight.pay || 0;
-
-            return `
-            <tr>
-              <td>${formattedDate}</td>
-              <td>${flightNumber}</td>
-              <td>${route}</td>
-              <td>${hours.toFixed(1)}h</td>
-              <td>${Math.round(pay)} AED</td>
-            </tr>
-          `;
-          })
-          .join("");
+        // Here you would update the UI with these statistics
+        // This would involve selecting the appropriate DOM elements and updating their content
       }
 
       /**
@@ -593,30 +435,6 @@
         ];
 
         return monthNames[monthNumber - 1] || "Unknown";
-      }
-
-      /**
-       * Gets the short month name from the month number
-       * @param {number} monthNumber - The month number (1-12)
-       * @returns {string} The short month name
-       */
-      function getMonthShortName(monthNumber) {
-        const monthShortNames = [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct",
-          "Nov",
-          "Dec",
-        ];
-
-        return monthShortNames[monthNumber - 1] || "Unk";
       }
     </script>
   </body>
