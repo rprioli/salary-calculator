@@ -23,20 +23,28 @@ function renderMonthSelector(selectedMonthKey, containerId, onMonthSelected) {
 
   // If no months, show only the "Upload Roster" button
   if (monthKeys.length === 0) {
+    // Create a container for the message and button
+    const contentContainer = document.createElement("div");
+    contentContainer.className = "month-selector-container";
+
+    // Add the message
     const noDataMessage = document.createElement("div");
-    noDataMessage.className = "text-center text-gray-500 py-2 mb-3";
+    noDataMessage.className = "month-selector-message";
     noDataMessage.innerHTML =
       '<i class="fas fa-info-circle mr-2"></i>No roster data available. Please upload a roster.';
-    container.appendChild(noDataMessage);
 
-    // Create a button container for better styling
+    // Create a button container
     const buttonContainer = document.createElement("div");
-    buttonContainer.className = "flex justify-center mt-2";
+    buttonContainer.className = "month-selector-buttons";
 
     // Add "Upload Roster" button
     const addMonthButton = createAddMonthButton(onMonthSelected);
+
+    // Append elements in the right order
     buttonContainer.appendChild(addMonthButton);
-    container.appendChild(buttonContainer);
+    contentContainer.appendChild(buttonContainer);
+    contentContainer.appendChild(noDataMessage);
+    container.appendChild(contentContainer);
 
     // Clear the selected month key since there's no data
     if (onMonthSelected) {
@@ -46,9 +54,13 @@ function renderMonthSelector(selectedMonthKey, containerId, onMonthSelected) {
     return;
   }
 
+  // Create a container for the content
+  const contentContainer = document.createElement("div");
+  contentContainer.className = "month-selector-container";
+
   // Create a button container
   const buttonContainer = document.createElement("div");
-  buttonContainer.className = "flex flex-wrap gap-2 items-center";
+  buttonContainer.className = "month-selector-buttons";
 
   // Process month keys to extract month and year
   const processedMonths = monthKeys.map((key) => {
@@ -77,12 +89,8 @@ function renderMonthSelector(selectedMonthKey, containerId, onMonthSelected) {
     const isSelected = monthData.key === selectedMonthKey;
 
     const monthButton = document.createElement("button");
-    monthButton.className = `px-4 py-2 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-      isSelected
-        ? "bg-indigo-600 text-white"
-        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-    }`;
-    monthButton.innerHTML = `<i class="fas fa-calendar-day mr-2"></i>${monthData.displayName}`;
+    monthButton.className = `month-button ${isSelected ? "selected" : ""}`;
+    monthButton.innerHTML = `<i class="fas fa-calendar-day"></i>${monthData.displayName}`;
 
     // Add click event listener
     monthButton.addEventListener("click", () => {
@@ -94,11 +102,15 @@ function renderMonthSelector(selectedMonthKey, containerId, onMonthSelected) {
     buttonContainer.appendChild(monthButton);
   });
 
-  // Add "Add Month" button
+  // Add "Upload Roster" button
   const addMonthButton = createAddMonthButton(onMonthSelected);
   buttonContainer.appendChild(addMonthButton);
 
-  container.appendChild(buttonContainer);
+  // Add the button container to the content container
+  contentContainer.appendChild(buttonContainer);
+
+  // Add the content container to the main container
+  container.appendChild(contentContainer);
 }
 
 /**
@@ -108,12 +120,8 @@ function renderMonthSelector(selectedMonthKey, containerId, onMonthSelected) {
  */
 function createAddMonthButton(onMonthSelected) {
   const addMonthButton = document.createElement("button");
-  addMonthButton.className =
-    "px-4 py-2 bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 font-medium";
-  addMonthButton.innerHTML = '<i class="fas fa-upload mr-2"></i>Upload Roster';
-  addMonthButton.style.display = "flex";
-  addMonthButton.style.alignItems = "center";
-  addMonthButton.style.justifyContent = "center";
+  addMonthButton.className = "upload-roster-button";
+  addMonthButton.innerHTML = '<i class="fas fa-upload"></i>Upload Roster';
 
   // Add click event listener
   addMonthButton.addEventListener("click", () => {
