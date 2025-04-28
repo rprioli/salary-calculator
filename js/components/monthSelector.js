@@ -23,6 +23,10 @@ function renderMonthSelector(selectedMonthKey, containerId, onMonthSelected) {
 
   // If no months, show only the "Upload Roster" button
   if (monthKeys.length === 0) {
+    // Create a container for the content
+    const contentContainer = document.createElement("div");
+    contentContainer.className = "month-selector-container";
+
     // Create the button container
     const buttonContainer = document.createElement("div");
     buttonContainer.className = "month-selector-buttons";
@@ -41,9 +45,12 @@ function renderMonthSelector(selectedMonthKey, containerId, onMonthSelected) {
     // Add the button to the container
     buttonContainer.appendChild(addMonthButton);
 
-    // Clear existing content and add the button container
+    // Add the button container to the content container
+    contentContainer.appendChild(buttonContainer);
+
+    // Clear existing content and add the content container
     container.innerHTML = "";
-    container.appendChild(buttonContainer);
+    container.appendChild(contentContainer);
 
     // Clear the selected month key since there's no data
     if (onMonthSelected) {
