@@ -24,14 +24,19 @@ function renderMonthSelector(selectedMonthKey, containerId, onMonthSelected) {
   // If no months, show only the "Upload Roster" button
   if (monthKeys.length === 0) {
     const noDataMessage = document.createElement("div");
-    noDataMessage.className = "text-center text-gray-500 py-2";
+    noDataMessage.className = "text-center text-gray-500 py-2 mb-3";
     noDataMessage.innerHTML =
       '<i class="fas fa-info-circle mr-2"></i>No roster data available. Please upload a roster.';
     container.appendChild(noDataMessage);
 
+    // Create a button container for better styling
+    const buttonContainer = document.createElement("div");
+    buttonContainer.className = "flex justify-center mt-2";
+
     // Add "Upload Roster" button
     const addMonthButton = createAddMonthButton(onMonthSelected);
-    container.appendChild(addMonthButton);
+    buttonContainer.appendChild(addMonthButton);
+    container.appendChild(buttonContainer);
 
     // Clear the selected month key since there's no data
     if (onMonthSelected) {
@@ -104,8 +109,11 @@ function renderMonthSelector(selectedMonthKey, containerId, onMonthSelected) {
 function createAddMonthButton(onMonthSelected) {
   const addMonthButton = document.createElement("button");
   addMonthButton.className =
-    "px-4 py-2 bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500";
+    "px-4 py-2 bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 font-medium";
   addMonthButton.innerHTML = '<i class="fas fa-upload mr-2"></i>Upload Roster';
+  addMonthButton.style.display = "flex";
+  addMonthButton.style.alignItems = "center";
+  addMonthButton.style.justifyContent = "center";
 
   // Add click event listener
   addMonthButton.addEventListener("click", () => {
