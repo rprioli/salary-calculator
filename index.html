@@ -411,10 +411,15 @@
           JSON.parse(localStorage.getItem("multiMonthData")) || {};
 
         // Get the selected month's data
-        const selectedMonthData = multiMonthData[selectedMonthKey] || {
-          calculationResults: {},
-          flights: [],
-        };
+        const selectedMonthData = selectedMonthKey
+          ? multiMonthData[selectedMonthKey] || {
+              calculationResults: {},
+              flights: [],
+            }
+          : {
+              calculationResults: {},
+              flights: [],
+            };
 
         // Update dashboard cards
         updateDashboardCards(selectedMonthData, multiMonthData);
@@ -424,11 +429,16 @@
           "current-month-display"
         );
         if (currentMonthDisplay) {
-          // Extract month and year from the key
-          const [month, year] = selectedMonthKey.split("-");
-          const monthName =
-            selectedMonthData.month || getMonthName(parseInt(month));
-          currentMonthDisplay.textContent = `(${monthName} ${year})`;
+          if (selectedMonthKey) {
+            // Extract month and year from the key
+            const [month, year] = selectedMonthKey.split("-");
+            const monthName =
+              selectedMonthData.month || getMonthName(parseInt(month));
+            currentMonthDisplay.textContent = `(${monthName} ${year})`;
+          } else {
+            // No month selected
+            currentMonthDisplay.textContent = "";
+          }
         }
       }
 
@@ -455,6 +465,105 @@
 
         return monthNames[monthNumber - 1] || "Unknown";
       }
+
+      /**
+       * Process roster data for a specific month
+       * @param {string} csvData - The CSV data to process
+       * @param {string} monthKey - The month key to associate the data with
+       */
+      window.processRosterDataForMonth = function (csvData, monthKey) {
+        console.log("Processing roster data for month:", monthKey);
+
+        // Get the user's role from session storage
+        const selectedRole =
+          sessionStorage.getItem("userPosition") === "sccm" ? "SCCM" : "CCM";
+
+        // Parse the CSV data
+        let result;
+
+        if (typeof csvData === "string") {
+          // Parse the CSV string using Papa Parse
+          const parsedData = Papa.parse(csvData, {
+            header: false,
+            skipEmptyLines: true,
+          }).data;
+
+          // Clean the parsed data if needed
+          let cleanedData = parsedData;
+          if (
+            window.cleanSpecialCharacters &&
+            typeof window.cleanSpecialCharacters === "function"
+          ) {
+            cleanedData = window.cleanSpecialCharacters(parsedData);
+          }
+
+          // Process the data using the existing function
+          result = window.processRosterData(cleanedData, selectedRole);
+
+          if (result && result.newParsedFlights) {
+            // Get multi-month data
+            let multiMonthData =
+              JSON.parse(localStorage.getItem("multiMonthData")) || {};
+
+            // Create or update the month data
+            if (!multiMonthData[monthKey]) {
+              multiMonthData[monthKey] = {
+                flights: [],
+                calculationResults: {},
+              };
+            }
+
+            // Extract month and year from the key
+            const [month, year] = monthKey.split("-");
+
+            // Update with the new data
+            multiMonthData[monthKey].flights = result.newParsedFlights;
+            multiMonthData[monthKey].calculationResults =
+              result.newCalculationResults;
+            multiMonthData[monthKey].month = getMonthName(parseInt(month));
+            multiMonthData[monthKey].year = parseInt(year);
+
+            // Save to localStorage
+            localStorage.setItem(
+              "multiMonthData",
+              JSON.stringify(multiMonthData)
+            );
+
+            // Show success notification
+            const monthName = multiMonthData[monthKey].month;
+            const yearValue = multiMonthData[monthKey].year;
+
+            if (window.ui && window.ui.showNotification) {
+              window.ui.showNotification(
+                "success",
+                `Roster uploaded successfully for ${monthName} ${yearValue}!`
+              );
+            } else {
+              const notification = document.createElement("div");
+              notification.className =
+                "fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg";
+              notification.innerHTML = `<i class="fas fa-check-circle mr-2"></i>Roster uploaded successfully for <strong>${monthName} ${yearValue}</strong>!`;
+              document.body.appendChild(notification);
+
+              setTimeout(() => {
+                notification.remove();
+              }, 3000);
+            }
+
+            return true;
+          } else {
+            console.error("Error processing roster data: No flights found");
+            window.showErrorNotification(
+              "Error processing roster data: No flights found"
+            );
+            return false;
+          }
+        } else {
+          console.error("Invalid CSV data format");
+          window.showErrorNotification("Invalid CSV data format");
+          return false;
+        }
+      };
 
       // Function to load sample data for testing
       function loadSampleData() {
