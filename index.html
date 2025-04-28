@@ -169,11 +169,21 @@
 
         <!-- Charts Section moved to Statistics page -->
 
-        <!-- Current Month Flights Table -->
+        <!-- Month Selector -->
+        <div class="mb-4">
+          <div
+            id="month-selector-container"
+            class="p-4 bg-white rounded-lg shadow-md border border-gray-200"
+          >
+            <!-- Month selector will be populated by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Flights Table -->
         <div class="table-card">
           <div class="table-card-header">
             <div class="table-card-title">
-              Current Month Flights
+              Flight Details
               <span
                 id="current-month-display"
                 class="text-sm font-normal text-gray-500"
@@ -303,6 +313,7 @@
     <script src="js/components/manualFlightEntry.js"></script>
     <script src="js/multiMonthData.js"></script>
     <script src="js/components/multiMonthVisualizations.js"></script>
+    <script src="js/components/monthSelector.js"></script>
     <script src="js/dashboard.js"></script>
     <script>
       // Add a timestamp to force refresh: 1714071600000
@@ -315,6 +326,9 @@
       // Uncomment this line to clear localStorage when needed
       clearLocalStorage(); // Clear localStorage to ensure accurate values
 
+      // Global variable to track the currently selected month
+      let selectedMonthKey = "";
+
       document.addEventListener("DOMContentLoaded", function () {
         // Load multi-month data
         const multiMonthData =
@@ -325,43 +339,122 @@
         const currentMonthKey = `${
           currentDate.getMonth() + 1
         }-${currentDate.getFullYear()}`;
-        const currentMonthData = multiMonthData[currentMonthKey] || {
+
+        // Set the selected month to the current month or the first available month
+        const availableMonths = Object.keys(multiMonthData);
+        if (availableMonths.length > 0) {
+          // If there's data for the current month, use it
+          if (multiMonthData[currentMonthKey]) {
+            selectedMonthKey = currentMonthKey;
+          } else {
+            // Otherwise, use the most recent month (assuming keys are sorted)
+            selectedMonthKey = availableMonths[0];
+          }
+        } else {
+          // If no months available, use the current month
+          selectedMonthKey = currentMonthKey;
+
+          // Initialize the current month data structure if it doesn't exist
+          if (!multiMonthData[selectedMonthKey]) {
+            multiMonthData[selectedMonthKey] = {
+              month: getMonthName(currentDate.getMonth() + 1),
+              year: currentDate.getFullYear(),
+              flights: [],
+              calculationResults: {},
+            };
+            localStorage.setItem(
+              "multiMonthData",
+              JSON.stringify(multiMonthData)
+            );
+          }
+        }
+
+        // Render the month selector
+        window.monthSelector.renderMonthSelector(
+          selectedMonthKey,
+          "month-selector-container",
+          onMonthSelected
+        );
+
+        // Update dashboard with the selected month's data
+        updateDashboardWithSelectedMonth();
+
+        // Set up event listeners
+        setupDashboardEventListeners();
+      });
+
+      /**
+       * Callback function when a month is selected
+       * @param {string} monthKey - The selected month key
+       */
+      function onMonthSelected(monthKey) {
+        console.log("Month selected:", monthKey);
+        selectedMonthKey = monthKey;
+
+        // Update the month selector
+        window.monthSelector.renderMonthSelector(
+          selectedMonthKey,
+          "month-selector-container",
+          onMonthSelected
+        );
+
+        // Update the dashboard with the selected month's data
+        updateDashboardWithSelectedMonth();
+      }
+
+      /**
+       * Updates the dashboard with the selected month's data
+       */
+      function updateDashboardWithSelectedMonth() {
+        // Load multi-month data
+        const multiMonthData =
+          JSON.parse(localStorage.getItem("multiMonthData")) || {};
+
+        // Get the selected month's data
+        const selectedMonthData = multiMonthData[selectedMonthKey] || {
           calculationResults: {},
+          flights: [],
         };
 
         // Update dashboard cards
-        updateDashboardCards(currentMonthData, multiMonthData);
+        updateDashboardCards(selectedMonthData, multiMonthData);
 
-        // Display current month name
+        // Display selected month name
         const currentMonthDisplay = document.getElementById(
           "current-month-display"
         );
         if (currentMonthDisplay) {
-          const monthNames = [
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December",
-          ];
-          currentMonthDisplay.textContent = `(${
-            monthNames[currentDate.getMonth()]
-          } ${currentDate.getFullYear()})`;
+          // Extract month and year from the key
+          const [month, year] = selectedMonthKey.split("-");
+          const monthName =
+            selectedMonthData.month || getMonthName(parseInt(month));
+          currentMonthDisplay.textContent = `(${monthName} ${year})`;
         }
+      }
 
-        // Set up event listeners
-        setupDashboardEventListeners();
+      /**
+       * Gets the month name from the month number
+       * @param {number} monthNumber - The month number (1-12)
+       * @returns {string} The month name
+       */
+      function getMonthName(monthNumber) {
+        const monthNames = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
 
-        // Don't load sample data automatically
-        // Only display data from actual user uploads
-      });
+        return monthNames[monthNumber - 1] || "Unknown";
+      }
 
       // Function to load sample data for testing
       function loadSampleData() {
@@ -1432,9 +1525,10 @@
                               return;
                             }
 
-                            // Get current month data from localStorage or create new
-                            const monthKey = `${result.newRosterMonth}-${result.newRosterYear}`;
-                            console.log("Month key:", monthKey);
+                            // Use the selected month key instead of the roster's month
+                            // This associates the uploaded roster with the currently selected month
+                            const monthKey = selectedMonthKey;
+                            console.log("Using selected month key:", monthKey);
                             let multiMonthData =
                               JSON.parse(
                                 localStorage.getItem("multiMonthData")
@@ -1465,24 +1559,27 @@
                             );
                             console.log("Saved data to localStorage");
 
-                            // Update the dashboard
-                            updateDashboardCards(
-                              multiMonthData[monthKey],
-                              multiMonthData
+                            // Update the dashboard with the selected month's data
+                            updateDashboardWithSelectedMonth();
+
+                            // Update the month selector to reflect any changes
+                            window.monthSelector.renderMonthSelector(
+                              selectedMonthKey,
+                              "month-selector-container",
+                              onMonthSelected
                             );
 
-                            // Update the flights table
-                            console.log(
-                              "Updating flights table with processed flights:",
-                              result.newParsedFlights.length
-                            );
-                            updateRecentFlightsTable(result.newParsedFlights);
+                            // Extract month and year from the key for the notification
+                            const [month, year] = monthKey.split("-");
+                            const monthName =
+                              multiMonthData[monthKey].month ||
+                              getMonthName(parseInt(month));
 
                             // Show success notification using ui-utils if available
                             if (window.ui && window.ui.showNotification) {
                               window.ui.showNotification(
                                 "success",
-                                "Roster uploaded successfully!"
+                                `Roster uploaded successfully for ${monthName} ${year}!`
                               );
                             } else {
                               // Fallback to old method
@@ -1490,8 +1587,7 @@
                                 document.createElement("div");
                               notification.className =
                                 "fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg";
-                              notification.textContent =
-                                "Roster uploaded successfully!";
+                              notification.innerHTML = `<i class="fas fa-check-circle mr-2"></i>Roster uploaded successfully for <strong>${monthName} ${year}</strong>!`;
                               document.body.appendChild(notification);
 
                               // Remove the notification after 3 seconds

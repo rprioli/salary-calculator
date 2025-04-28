@@ -1,315 +1,373 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="View statistical salary data - Skywage Cabin Crew Salary Calculator">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="View statistical salary data - Skywage Cabin Crew Salary Calculator"
+    />
     <title>Skywage - Statistics</title>
-    <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
     <!-- Include Tailwind CSS from CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Include Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
 
     <!-- Authentication is now handled by auth.js -->
-</head>
-<body style="margin: 0; padding: 0; overflow-x: hidden;">
+  </head>
+  <body style="margin: 0; padding: 0; overflow-x: hidden">
     <div class="dashboard-layout">
-        <!-- Sidebar -->
-        <aside class="dashboard-sidebar">
-            <div class="sidebar-logo">
-                <i class="fas fa-plane"></i>
+      <!-- Sidebar -->
+      <aside class="dashboard-sidebar">
+        <div class="sidebar-logo">
+          <i class="fas fa-plane"></i>
+        </div>
+        <nav class="sidebar-menu">
+          <a href="index.html" class="sidebar-menu-item">
+            <i class="fas fa-chart-line"></i>
+            <span>Dashboard</span>
+          </a>
+          <a href="statistics.html" class="sidebar-menu-item active">
+            <i class="fas fa-chart-bar"></i>
+            <span>Statistics</span>
+          </a>
+          <a href="profile.html" class="sidebar-menu-item">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+          </a>
+          <a href="#" class="sidebar-menu-item">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+          </a>
+          <a href="#" class="sidebar-menu-item">
+            <i class="fas fa-question-circle"></i>
+            <span>Help</span>
+          </a>
+        </nav>
+        <div class="sidebar-footer">
+          <a href="#" id="sign-out-button">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Sign Out</span>
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="dashboard-content">
+        <header class="dashboard-header">
+          <h1 class="dashboard-title">Statistics</h1>
+          <div class="dashboard-user">
+            <div class="dashboard-user-info">
+              <div class="dashboard-user-name" id="user-name">
+                Welcome back!
+              </div>
+              <div class="dashboard-user-role" id="user-email">
+                user@example.com
+              </div>
             </div>
-            <nav class="sidebar-menu">
-                <a href="index.html" class="sidebar-menu-item">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="statistics.html" class="sidebar-menu-item active">
-                    <i class="fas fa-chart-bar"></i>
-                    <span>Statistics</span>
-                </a>
-                <a href="profile.html" class="sidebar-menu-item">
-                    <i class="fas fa-user"></i>
-                    <span>Profile</span>
-                </a>
-                <a href="#" class="sidebar-menu-item">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                </a>
-                <a href="#" class="sidebar-menu-item">
-                    <i class="fas fa-question-circle"></i>
-                    <span>Help</span>
-                </a>
-            </nav>
-            <div class="sidebar-footer">
-                <a href="#" id="sign-out-button">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Sign Out</span>
-                </a>
+            <div class="dashboard-user-avatar">
+              <i class="fas fa-user"></i>
             </div>
-        </aside>
+          </div>
+        </header>
 
-        <!-- Main Content -->
-        <main class="dashboard-content">
-            <header class="dashboard-header">
-                <h1 class="dashboard-title">Statistics</h1>
-                <div class="dashboard-user">
-                    <div class="dashboard-user-info">
-                        <div class="dashboard-user-name" id="user-name">Welcome back!</div>
-                        <div class="dashboard-user-role" id="user-email">user@example.com</div>
-                    </div>
-                    <div class="dashboard-user-avatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                </div>
-            </header>
-
-            <!-- Earnings Breakdown (Moved to top) -->
-            <div class="chart-grid mb-6">
-                <!-- Year-to-Date Earnings -->
-                <div class="chart-card">
-                    <div class="chart-card-header">
-                        <div class="chart-card-title">Year-to-Date Earnings</div>
-                    </div>
-                    <div class="p-4">
-                        <div class="flex flex-col items-center">
-                            <div class="text-3xl font-bold text-blue-600 mb-2">76,910 AED</div>
-                            <div class="text-sm text-gray-500">Total earnings in 2023</div>
-
-                            <div class="w-full mt-6">
-                                <div class="flex justify-between text-sm mb-1">
-                                    <span class="text-gray-500">Basic Salary</span>
-                                    <span class="font-medium">51,000 AED</span>
-                                </div>
-                                <div class="w-full bg-gray-200 rounded-full h-2 mb-3">
-                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 66%;"></div>
-                                </div>
-
-                                <div class="flex justify-between text-sm mb-1">
-                                    <span class="text-gray-500">Flight Pay</span>
-                                    <span class="font-medium">25,910 AED</span>
-                                </div>
-                                <div class="w-full bg-gray-200 rounded-full h-2 mb-3">
-                                    <div class="bg-green-500 h-2 rounded-full" style="width: 34%;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Monthly Trends -->
-                <div class="chart-card">
-                    <div class="chart-card-header">
-                        <div class="chart-card-title">Monthly Trends</div>
-                    </div>
-                    <div class="p-4">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-gray-50 p-3 rounded-lg">
-                                <div class="text-sm text-gray-500 mb-1">Avg. Monthly Salary</div>
-                                <div class="text-xl font-bold text-gray-800">12,818 AED</div>
-                            </div>
-                            <div class="bg-gray-50 p-3 rounded-lg">
-                                <div class="text-sm text-gray-500 mb-1">Highest Month</div>
-                                <div class="text-xl font-bold text-gray-800">14,044 AED</div>
-                                <div class="text-xs text-gray-500">May 2023</div>
-                            </div>
-                            <div class="bg-gray-50 p-3 rounded-lg">
-                                <div class="text-sm text-gray-500 mb-1">Avg. Flight Hours</div>
-                                <div class="text-xl font-bold text-gray-800">82.5 hrs</div>
-                            </div>
-                            <div class="bg-gray-50 p-3 rounded-lg">
-                                <div class="text-sm text-gray-500 mb-1">Total Flights</div>
-                                <div class="text-xl font-bold text-gray-800">124</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!-- Earnings Breakdown (Moved to top) -->
+        <div class="chart-grid mb-6">
+          <!-- Year-to-Date Earnings -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-card-title">Year-to-Date Earnings</div>
             </div>
-
-            <!-- Monthly Charts Section -->
-            <div class="chart-grid mb-6">
-                <!-- Monthly Salary Chart -->
-                <div class="chart-card">
-                    <div class="chart-card-header">
-                        <div class="chart-card-title">Monthly Salary</div>
-                        <div class="chart-card-actions">
-                            <button class="chart-card-action">
-                                <i class="fas fa-ellipsis-h"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 bg-blue-600 rounded-t-md" style="height: 60px;"></div>
-                            <div class="text-xs mt-1 text-gray-500">Jan</div>
-                            <div class="text-xs text-gray-400">12,156</div>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 bg-blue-600 rounded-t-md" style="height: 70px;"></div>
-                            <div class="text-xs mt-1 text-gray-500">Feb</div>
-                            <div class="text-xs text-gray-400">12,704</div>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 bg-blue-600 rounded-t-md" style="height: 80px;"></div>
-                            <div class="text-xs mt-1 text-gray-500">Mar</div>
-                            <div class="text-xs text-gray-400">13,392</div>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 bg-blue-600 rounded-t-md" style="height: 75px;"></div>
-                            <div class="text-xs mt-1 text-gray-500">Apr</div>
-                            <div class="text-xs text-gray-400">11,688</div>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 bg-blue-600 rounded-t-md" style="height: 90px;"></div>
-                            <div class="text-xs mt-1 text-gray-500">May</div>
-                            <div class="text-xs text-gray-400">14,044</div>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 bg-blue-600 rounded-t-md" style="height: 65px;"></div>
-                            <div class="text-xs mt-1 text-gray-500">Jun</div>
-                            <div class="text-xs text-gray-400">12,926</div>
-                        </div>
-                    </div>
+            <div class="p-4">
+              <div class="flex flex-col items-center">
+                <div class="text-3xl font-bold text-blue-600 mb-2">
+                  76,910 AED
                 </div>
+                <div class="text-sm text-gray-500">Total earnings in 2023</div>
 
-                <!-- Flight Hours Chart -->
-                <div class="chart-card">
-                    <div class="chart-card-header">
-                        <div class="chart-card-title">Flight Hours</div>
-                        <div class="chart-card-actions">
-                            <button class="chart-card-action">
-                                <i class="fas fa-ellipsis-h"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 bg-green-500 rounded-t-md" style="height: 60px;"></div>
-                            <div class="text-xs mt-1 text-gray-500">Jan</div>
-                            <div class="text-xs text-gray-400">63.5</div>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 bg-green-500 rounded-t-md" style="height: 80px;"></div>
-                            <div class="text-xs mt-1 text-gray-500">Feb</div>
-                            <div class="text-xs text-gray-400">80.5</div>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 bg-green-500 rounded-t-md" style="height: 85px;"></div>
-                            <div class="text-xs mt-1 text-gray-500">Mar</div>
-                            <div class="text-xs text-gray-400">85.5</div>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 bg-green-500 rounded-t-md" style="height: 90px;"></div>
-                            <div class="text-xs mt-1 text-gray-500">Apr</div>
-                            <div class="text-xs text-gray-400">90.0</div>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 bg-green-500 rounded-t-md" style="height: 100px;"></div>
-                            <div class="text-xs mt-1 text-gray-500">May</div>
-                            <div class="text-xs text-gray-400">100.5</div>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-12 bg-green-500 rounded-t-md" style="height: 75px;"></div>
-                            <div class="text-xs mt-1 text-gray-500">Jun</div>
-                            <div class="text-xs text-gray-400">74.5</div>
-                        </div>
-                    </div>
+                <div class="w-full mt-6">
+                  <div class="flex justify-between text-sm mb-1">
+                    <span class="text-gray-500">Basic Salary</span>
+                    <span class="font-medium">51,000 AED</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-2 mb-3">
+                    <div
+                      class="bg-blue-600 h-2 rounded-full"
+                      style="width: 66%"
+                    ></div>
+                  </div>
+
+                  <div class="flex justify-between text-sm mb-1">
+                    <span class="text-gray-500">Flight Pay</span>
+                    <span class="font-medium">25,910 AED</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-2 mb-3">
+                    <div
+                      class="bg-green-500 h-2 rounded-full"
+                      style="width: 34%"
+                    ></div>
+                  </div>
                 </div>
+              </div>
             </div>
+          </div>
 
-            <!-- Month Selection -->
-            <div class="chart-card mb-6">
-                <div class="chart-card-header">
-                    <div class="chart-card-title">Select Month</div>
-                </div>
-                <div class="p-4">
-                    <div class="flex flex-wrap gap-2">
-                        <button class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors">January 2023</button>
-                        <button class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors">February 2023</button>
-                        <button class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors">March 2023</button>
-                        <button class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors">April 2023</button>
-                        <button class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors">May 2023</button>
-                        <button class="px-4 py-2 bg-blue-600 text-white rounded-md">June 2023</button>
-                    </div>
-                </div>
+          <!-- Monthly Trends -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-card-title">Monthly Trends</div>
             </div>
-
-            <!-- Monthly Comparison Chart removed as it was redundant -->
-
-
-
-            <!-- Monthly Flight Details -->
-            <div class="table-card mb-6">
-                <div class="table-card-header">
-                    <div class="table-card-title">June 2023 Flights</div>
+            <div class="p-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="bg-gray-50 p-3 rounded-lg">
+                  <div class="text-sm text-gray-500 mb-1">
+                    Avg. Monthly Salary
+                  </div>
+                  <div class="text-xl font-bold text-gray-800">12,818 AED</div>
                 </div>
-                <div class="table-container">
-                    <table class="dashboard-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Flight</th>
-                                <th>Route</th>
-                                <th>Hours</th>
-                                <th>Pay</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>21 Jun</td>
-                                <td>FZ123</td>
-                                <td>DXB - IKA</td>
-                                <td>5.5h</td>
-                                <td>550 AED</td>
-                            </tr>
-                            <tr>
-                                <td>19 Jun</td>
-                                <td>FZ456</td>
-                                <td>DXB - KHI</td>
-                                <td>4.0h</td>
-                                <td>400 AED</td>
-                            </tr>
-                            <tr>
-                                <td>15 Jun</td>
-                                <td>FZ789</td>
-                                <td>DXB - AMM</td>
-                                <td>3.5h</td>
-                                <td>350 AED</td>
-                            </tr>
-                            <tr>
-                                <td>10 Jun</td>
-                                <td>FZ234</td>
-                                <td>DXB - DOH</td>
-                                <td>2.5h</td>
-                                <td>250 AED</td>
-                            </tr>
-                            <tr>
-                                <td>05 Jun</td>
-                                <td>FZ567</td>
-                                <td>DXB - MCT</td>
-                                <td>2.0h</td>
-                                <td>200 AED</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="bg-gray-50 p-3 rounded-lg">
+                  <div class="text-sm text-gray-500 mb-1">Highest Month</div>
+                  <div class="text-xl font-bold text-gray-800">14,044 AED</div>
+                  <div class="text-xs text-gray-500">May 2023</div>
                 </div>
+                <div class="bg-gray-50 p-3 rounded-lg">
+                  <div class="text-sm text-gray-500 mb-1">
+                    Avg. Flight Hours
+                  </div>
+                  <div class="text-xl font-bold text-gray-800">82.5 hrs</div>
+                </div>
+                <div class="bg-gray-50 p-3 rounded-lg">
+                  <div class="text-sm text-gray-500 mb-1">Total Flights</div>
+                  <div class="text-xl font-bold text-gray-800">124</div>
+                </div>
+              </div>
             </div>
+          </div>
+        </div>
 
-            <!-- Footer -->
-            <div class="text-center text-gray-500 text-sm mt-10 pt-6 border-t border-gray-200">
-                <div class="flex justify-center items-center">
-                    <i class="fas fa-plane text-blue-400 mr-2"></i>
-                    <span>© 2025 Skywage - Cabin Crew Salary Calculator</span>
-                </div>
-                <div class="mt-2 text-xs text-gray-400">
-                    <a href="#" class="text-blue-500 hover:text-blue-700 transition-colors">Privacy Policy</a> |
-                    <a href="#" class="text-blue-500 hover:text-blue-700 transition-colors">Terms of Service</a>
-                </div>
+        <!-- Monthly Charts Section -->
+        <div class="chart-grid mb-6">
+          <!-- Monthly Salary Chart -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-card-title">Monthly Salary</div>
+              <div class="chart-card-actions">
+                <button class="chart-card-action">
+                  <i class="fas fa-ellipsis-h"></i>
+                </button>
+              </div>
             </div>
-        </main>
+            <div class="chart-container">
+              <div class="flex flex-col items-center">
+                <div
+                  class="w-12 bg-blue-600 rounded-t-md"
+                  style="height: 60px"
+                ></div>
+                <div class="text-xs mt-1 text-gray-500">Jan</div>
+                <div class="text-xs text-gray-400">12,156</div>
+              </div>
+              <div class="flex flex-col items-center">
+                <div
+                  class="w-12 bg-blue-600 rounded-t-md"
+                  style="height: 70px"
+                ></div>
+                <div class="text-xs mt-1 text-gray-500">Feb</div>
+                <div class="text-xs text-gray-400">12,704</div>
+              </div>
+              <div class="flex flex-col items-center">
+                <div
+                  class="w-12 bg-blue-600 rounded-t-md"
+                  style="height: 80px"
+                ></div>
+                <div class="text-xs mt-1 text-gray-500">Mar</div>
+                <div class="text-xs text-gray-400">13,392</div>
+              </div>
+              <div class="flex flex-col items-center">
+                <div
+                  class="w-12 bg-blue-600 rounded-t-md"
+                  style="height: 75px"
+                ></div>
+                <div class="text-xs mt-1 text-gray-500">Apr</div>
+                <div class="text-xs text-gray-400">11,688</div>
+              </div>
+              <div class="flex flex-col items-center">
+                <div
+                  class="w-12 bg-blue-600 rounded-t-md"
+                  style="height: 90px"
+                ></div>
+                <div class="text-xs mt-1 text-gray-500">May</div>
+                <div class="text-xs text-gray-400">14,044</div>
+              </div>
+              <div class="flex flex-col items-center">
+                <div
+                  class="w-12 bg-blue-600 rounded-t-md"
+                  style="height: 65px"
+                ></div>
+                <div class="text-xs mt-1 text-gray-500">Jun</div>
+                <div class="text-xs text-gray-400">12,926</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Flight Hours Chart -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-card-title">Flight Hours</div>
+              <div class="chart-card-actions">
+                <button class="chart-card-action">
+                  <i class="fas fa-ellipsis-h"></i>
+                </button>
+              </div>
+            </div>
+            <div class="chart-container">
+              <div class="flex flex-col items-center">
+                <div
+                  class="w-12 bg-green-500 rounded-t-md"
+                  style="height: 60px"
+                ></div>
+                <div class="text-xs mt-1 text-gray-500">Jan</div>
+                <div class="text-xs text-gray-400">63.5</div>
+              </div>
+              <div class="flex flex-col items-center">
+                <div
+                  class="w-12 bg-green-500 rounded-t-md"
+                  style="height: 80px"
+                ></div>
+                <div class="text-xs mt-1 text-gray-500">Feb</div>
+                <div class="text-xs text-gray-400">80.5</div>
+              </div>
+              <div class="flex flex-col items-center">
+                <div
+                  class="w-12 bg-green-500 rounded-t-md"
+                  style="height: 85px"
+                ></div>
+                <div class="text-xs mt-1 text-gray-500">Mar</div>
+                <div class="text-xs text-gray-400">85.5</div>
+              </div>
+              <div class="flex flex-col items-center">
+                <div
+                  class="w-12 bg-green-500 rounded-t-md"
+                  style="height: 90px"
+                ></div>
+                <div class="text-xs mt-1 text-gray-500">Apr</div>
+                <div class="text-xs text-gray-400">90.0</div>
+              </div>
+              <div class="flex flex-col items-center">
+                <div
+                  class="w-12 bg-green-500 rounded-t-md"
+                  style="height: 100px"
+                ></div>
+                <div class="text-xs mt-1 text-gray-500">May</div>
+                <div class="text-xs text-gray-400">100.5</div>
+              </div>
+              <div class="flex flex-col items-center">
+                <div
+                  class="w-12 bg-green-500 rounded-t-md"
+                  style="height: 75px"
+                ></div>
+                <div class="text-xs mt-1 text-gray-500">Jun</div>
+                <div class="text-xs text-gray-400">74.5</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Month Selector -->
+        <div class="mb-6">
+          <div
+            id="month-selector-container"
+            class="p-4 bg-white rounded-lg shadow-md border border-gray-200"
+          >
+            <!-- Month selector will be populated by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Monthly Flight Details -->
+        <div class="table-card mb-6">
+          <div class="table-card-header">
+            <div class="table-card-title">June 2023 Flights</div>
+          </div>
+          <div class="table-container">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Flight</th>
+                  <th>Route</th>
+                  <th>Hours</th>
+                  <th>Pay</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>21 Jun</td>
+                  <td>FZ123</td>
+                  <td>DXB - IKA</td>
+                  <td>5.5h</td>
+                  <td>550 AED</td>
+                </tr>
+                <tr>
+                  <td>19 Jun</td>
+                  <td>FZ456</td>
+                  <td>DXB - KHI</td>
+                  <td>4.0h</td>
+                  <td>400 AED</td>
+                </tr>
+                <tr>
+                  <td>15 Jun</td>
+                  <td>FZ789</td>
+                  <td>DXB - AMM</td>
+                  <td>3.5h</td>
+                  <td>350 AED</td>
+                </tr>
+                <tr>
+                  <td>10 Jun</td>
+                  <td>FZ234</td>
+                  <td>DXB - DOH</td>
+                  <td>2.5h</td>
+                  <td>250 AED</td>
+                </tr>
+                <tr>
+                  <td>05 Jun</td>
+                  <td>FZ567</td>
+                  <td>DXB - MCT</td>
+                  <td>2.0h</td>
+                  <td>200 AED</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div
+          class="text-center text-gray-500 text-sm mt-10 pt-6 border-t border-gray-200"
+        >
+          <div class="flex justify-center items-center">
+            <i class="fas fa-plane text-blue-400 mr-2"></i>
+            <span>© 2025 Skywage - Cabin Crew Salary Calculator</span>
+          </div>
+          <div class="mt-2 text-xs text-gray-400">
+            <a
+              href="#"
+              class="text-blue-500 hover:text-blue-700 transition-colors"
+              >Privacy Policy</a
+            >
+            |
+            <a
+              href="#"
+              class="text-blue-500 hover:text-blue-700 transition-colors"
+              >Terms of Service</a
+            >
+          </div>
+        </div>
+      </main>
     </div>
 
     <!-- JavaScript files -->
@@ -332,55 +390,234 @@
     <script src="js/components/manualFlightEntry.js"></script>
     <script src="js/multiMonthData.js"></script>
     <script src="js/components/multiMonthVisualizations.js"></script>
+    <script src="js/components/monthSelector.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set user email
-            const userEmail = sessionStorage.getItem('userEmail');
-            const userEmailElement = document.getElementById('user-email');
-            if (userEmailElement && userEmail) {
-                userEmailElement.textContent = userEmail;
+      // Global variable to track the currently selected month
+      let selectedMonthKey = "";
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // Set user email
+        const userEmail = sessionStorage.getItem("userEmail");
+        const userEmailElement = document.getElementById("user-email");
+        if (userEmailElement && userEmail) {
+          userEmailElement.textContent = userEmail;
+        }
+
+        // Sign out button
+        const signOutButton = document.getElementById("sign-out-button");
+        if (signOutButton) {
+          signOutButton.addEventListener("click", function (e) {
+            e.preventDefault();
+            if (window.auth) {
+              window.auth.signOut();
+            } else {
+              // Fallback if auth module not loaded
+              sessionStorage.removeItem("isAuthenticated");
+              sessionStorage.removeItem("userPosition");
+              sessionStorage.removeItem("userEmail");
+              window.location.href = "sign-in.html";
             }
+          });
+        }
 
-            // Sign out button
-            const signOutButton = document.getElementById('sign-out-button');
-            if (signOutButton) {
-                signOutButton.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    if (window.auth) {
-                        window.auth.signOut();
-                    } else {
-                        // Fallback if auth module not loaded
-                        sessionStorage.removeItem('isAuthenticated');
-                        sessionStorage.removeItem('userPosition');
-                        sessionStorage.removeItem('userEmail');
-                        window.location.href = 'sign-in.html';
-                    }
-                });
-            }
+        // Load multi-month data
+        const multiMonthData =
+          JSON.parse(localStorage.getItem("multiMonthData")) || {};
 
-            // Load multi-month data
-            const multiMonthData = JSON.parse(localStorage.getItem('multiMonthData')) || {};
+        // Get current month data
+        const currentDate = new Date();
+        const currentMonthKey = `${
+          currentDate.getMonth() + 1
+        }-${currentDate.getFullYear()}`;
 
-            // Month selection buttons
-            const monthButtons = document.querySelectorAll('.chart-card button');
-            monthButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Remove active class from all buttons
-                    monthButtons.forEach(btn => {
-                        btn.classList.remove('bg-blue-600', 'text-white');
-                        btn.classList.add('bg-gray-100');
-                    });
+        // Set the selected month to the current month or the first available month
+        const availableMonths = Object.keys(multiMonthData);
+        if (availableMonths.length > 0) {
+          // If there's data for the current month, use it
+          if (multiMonthData[currentMonthKey]) {
+            selectedMonthKey = currentMonthKey;
+          } else {
+            // Otherwise, use the most recent month (assuming keys are sorted)
+            selectedMonthKey = availableMonths[0];
+          }
+        } else {
+          // If no months available, use the current month
+          selectedMonthKey = currentMonthKey;
+        }
 
-                    // Add active class to clicked button
-                    this.classList.remove('bg-gray-100');
-                    this.classList.add('bg-blue-600', 'text-white');
+        // Render the month selector
+        window.monthSelector.renderMonthSelector(
+          selectedMonthKey,
+          "month-selector-container",
+          onMonthSelected
+        );
 
-                    // Here you would normally update the displayed data based on the selected month
-                    // For demo purposes, we'll just show an alert
-                    alert(`Selected month: ${this.textContent}`);
-                });
-            });
+        // Update statistics with the selected month's data
+        updateStatisticsWithSelectedMonth();
+      });
+
+      /**
+       * Callback function when a month is selected
+       * @param {string} monthKey - The selected month key
+       */
+      function onMonthSelected(monthKey) {
+        console.log("Month selected:", monthKey);
+        selectedMonthKey = monthKey;
+
+        // Update the month selector
+        window.monthSelector.renderMonthSelector(
+          selectedMonthKey,
+          "month-selector-container",
+          onMonthSelected
+        );
+
+        // Update the statistics with the selected month's data
+        updateStatisticsWithSelectedMonth();
+      }
+
+      /**
+       * Updates the statistics page with the selected month's data
+       */
+      function updateStatisticsWithSelectedMonth() {
+        // Load multi-month data
+        const multiMonthData =
+          JSON.parse(localStorage.getItem("multiMonthData")) || {};
+
+        // Get the selected month's data
+        const selectedMonthData = multiMonthData[selectedMonthKey] || {
+          calculationResults: {},
+          flights: [],
+        };
+
+        // Extract month and year from the key
+        const [month, year] = selectedMonthKey.split("-");
+        const monthName =
+          selectedMonthData.month || getMonthName(parseInt(month));
+
+        // Update the monthly flight details table title
+        const flightDetailsTitle = document.querySelector(
+          ".table-card .table-card-title"
+        );
+        if (flightDetailsTitle) {
+          flightDetailsTitle.textContent = `${monthName} ${year} Flights`;
+        }
+
+        // Update the monthly flight details table
+        updateMonthlyFlightsTable(selectedMonthData.flights || []);
+
+        // Update other statistics and charts
+        // This would be implemented based on the actual data structure and requirements
+        // For now, we'll just log the data
+        console.log("Updating statistics with data:", selectedMonthData);
+      }
+
+      /**
+       * Updates the monthly flights table with the selected month's flights
+       * @param {Array} flights - The flights to display
+       */
+      function updateMonthlyFlightsTable(flights) {
+        const tableBody = document.querySelector(
+          ".table-card .dashboard-table tbody"
+        );
+        if (!tableBody) return;
+
+        if (!flights || flights.length === 0) {
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="5" class="text-center py-4 text-gray-500">No flights data available for this month.</td>
+            </tr>
+          `;
+          return;
+        }
+
+        // Sort flights by date
+        const sortedFlights = [...flights].sort((a, b) => {
+          return new Date(a.date) - new Date(b.date);
         });
+
+        // Generate table rows
+        tableBody.innerHTML = sortedFlights
+          .map((flight) => {
+            // Format the date
+            const date = new Date(flight.date);
+            const formattedDate = `${date.getDate()} ${getMonthShortName(
+              date.getMonth() + 1
+            )}`;
+
+            // Get flight number
+            const flightNumber = flight.flightNumber || flight.flight || "N/A";
+
+            // Get route
+            const route =
+              flight.sector ||
+              `${flight.departure || "N/A"} - ${flight.destination || "N/A"}`;
+
+            // Get hours
+            const hours = flight.flightHours || flight.hours || 0;
+
+            // Get pay
+            const pay = flight.flightPay || flight.pay || 0;
+
+            return `
+            <tr>
+              <td>${formattedDate}</td>
+              <td>${flightNumber}</td>
+              <td>${route}</td>
+              <td>${hours.toFixed(1)}h</td>
+              <td>${Math.round(pay)} AED</td>
+            </tr>
+          `;
+          })
+          .join("");
+      }
+
+      /**
+       * Gets the month name from the month number
+       * @param {number} monthNumber - The month number (1-12)
+       * @returns {string} The month name
+       */
+      function getMonthName(monthNumber) {
+        const monthNames = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+
+        return monthNames[monthNumber - 1] || "Unknown";
+      }
+
+      /**
+       * Gets the short month name from the month number
+       * @param {number} monthNumber - The month number (1-12)
+       * @returns {string} The short month name
+       */
+      function getMonthShortName(monthNumber) {
+        const monthShortNames = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
+
+        return monthShortNames[monthNumber - 1] || "Unk";
+      }
     </script>
-</body>
+  </body>
 </html>
