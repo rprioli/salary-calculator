@@ -453,9 +453,8 @@
 
 /* Month Selector Styles */
 .month-selector-container {
-  margin-bottom: 1.5rem;
   display: flex;
-  justify-content: center;
+  justify-content: left;
 }
 
 .month-button {
@@ -548,7 +547,6 @@
   gap: 0.5rem;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1rem;
 }
 
 /* Responsive */

@@ -68,6 +68,10 @@ function renderMonthSelector(selectedMonthKey, containerId, onMonthSelected) {
   const buttonContainer = document.createElement("div");
   buttonContainer.className = "month-selector-buttons";
 
+  // Add "Upload Roster" button first
+  const addMonthButton = createAddMonthButton(onMonthSelected);
+  buttonContainer.appendChild(addMonthButton);
+
   // Process month keys to extract month and year
   const processedMonths = monthKeys.map((key) => {
     const [month, year] = key.split("-");
@@ -82,12 +86,12 @@ function renderMonthSelector(selectedMonthKey, containerId, onMonthSelected) {
     };
   });
 
-  // Sort by year (descending) and then by month (descending)
+  // Sort by year (ascending) and then by month (ascending)
   processedMonths.sort((a, b) => {
     if (a.year !== b.year) {
-      return b.year - a.year; // Descending by year
+      return a.year - b.year; // Ascending by year
     }
-    return b.month - a.month; // Descending by month
+    return a.month - b.month; // Ascending by month
   });
 
   // Create buttons for each month
@@ -107,10 +111,6 @@ function renderMonthSelector(selectedMonthKey, containerId, onMonthSelected) {
 
     buttonContainer.appendChild(monthButton);
   });
-
-  // Add "Upload Roster" button
-  const addMonthButton = createAddMonthButton(onMonthSelected);
-  buttonContainer.appendChild(addMonthButton);
 
   // Add the button container to the content container
   contentContainer.appendChild(buttonContainer);
